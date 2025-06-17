@@ -54,7 +54,9 @@ pip install -r requirements.txt
 
 # Configure environment
 cp .env.example .env
-# Edit .env with your settings
+# Edit `.env` with your local settings. The provided example uses a local
+# PostgreSQL and Redis instance. If these are unavailable the application will
+# start with database initialization errors logged but will continue running.
 
 # Initialize database
 alembic upgrade head
