@@ -81,10 +81,7 @@ setup_tracing(app)
 # Initialize database
 @app.on_event("startup")
 async def startup_event():
-    try:
-        init_db()
-    except Exception as e:  # pragma: no cover - optional DB in tests
-        logger.error(f"Database initialization failed: {e}")
+    init_db()
     logger.info("Application startup complete")
 
 # Health check endpoint

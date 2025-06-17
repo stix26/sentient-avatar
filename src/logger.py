@@ -2,7 +2,6 @@ import logging
 import sys
 from logging.handlers import RotatingFileHandler
 from pythonjsonlogger import jsonlogger
-from pathlib import Path
 from src.config import settings
 
 def setup_logger():
@@ -12,10 +11,8 @@ def setup_logger():
 
     # Create handlers
     console_handler = logging.StreamHandler(sys.stdout)
-    log_path = Path("logs/app.log")
-    log_path.parent.mkdir(parents=True, exist_ok=True)
     file_handler = RotatingFileHandler(
-        log_path,
+        "logs/app.log",
         maxBytes=10485760,  # 10MB
         backupCount=5
     )
