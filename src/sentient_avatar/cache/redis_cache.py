@@ -1,5 +1,4 @@
 import json
-import pickle
 from typing import Any, Optional, Union, Dict, List
 import aioredis
 from datetime import timedelta
@@ -50,7 +49,7 @@ class RedisCache:
         """
         try:
             value = await self.binary_redis.get(key)
-            return pickle.loads(value) if value else default
+            return json.loads(value.decode()) if value else default
         except Exception as e:
             logger.error(f"Error getting binary cache key {key}: {e}")
             return default
@@ -85,7 +84,7 @@ class RedisCache:
             True if successful
         """
         try:
-            await self.binary_redis.set(key, pickle.dumps(value), ex=expire)
+            await self.binary_redis.set(key, json.dumps(value).encode(), ex=expire)
             return True
         except Exception as e:
             logger.error(f"Error setting binary cache key {key}: {e}")
@@ -236,7 +235,7 @@ class RedisCache:
                 key_parts = [key_prefix, func.__name__]
                 key_parts.extend(str(arg) for arg in args)
                 key_parts.extend(f"{k}:{v}" for k, v in sorted(kwargs.items()))
-                key = hashlib.md5(":".join(key_parts).encode()).hexdigest()
+                key = hashlib.sha256(":".join(key_parts).encode()).hexdigest()
                 
                 # Try to get from cache
                 cached_value = await self.get(key)
@@ -267,7 +266,7 @@ class RedisCache:
                 key_parts = [key_prefix, func.__name__]
                 key_parts.extend(str(arg) for arg in args)
                 key_parts.extend(f"{k}:{v}" for k, v in sorted(kwargs.items()))
-                key = hashlib.md5(":".join(key_parts).encode()).hexdigest()
+                key = hashlib.sha256(":".join(key_parts).encode()).hexdigest()
                 
                 # Try to get from cache
                 cached_value = await self.get_binary(key)

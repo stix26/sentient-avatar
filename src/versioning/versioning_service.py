@@ -291,7 +291,8 @@ def main():
     service = ModelVersioningService(config)
     
     # Start Ray Serve
-    serve.start(http_options=HTTPOptions(host="0.0.0.0", port=8004))
+    host = os.getenv("SERVICE_HOST", "127.0.0.1")
+    serve.start(http_options=HTTPOptions(host=host, port=8004))
     
     # Deploy application
     serve.run(

@@ -2,6 +2,7 @@ import os
 import json
 import time
 import logging
+import tempfile
 import numpy as np
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Tuple
@@ -184,7 +185,8 @@ class ModelExplainer:
             plt.tight_layout()
             
             # Save plot
-            plot_path = f"/tmp/heatmap_{int(time.time())}.png"
+            tmp_dir = tempfile.gettempdir()
+            plot_path = os.path.join(tmp_dir, f"heatmap_{int(time.time())}.png")
             plt.savefig(plot_path)
             plt.close()
             
@@ -208,7 +210,8 @@ class ModelExplainer:
             plt.tight_layout()
             
             # Save plot
-            plot_path = f"/tmp/barchart_{int(time.time())}.png"
+            tmp_dir = tempfile.gettempdir()
+            plot_path = os.path.join(tmp_dir, f"barchart_{int(time.time())}.png")
             plt.savefig(plot_path)
             plt.close()
             
@@ -234,7 +237,8 @@ class ModelExplainer:
             plt.tight_layout()
             
             # Save plot
-            plot_path = f"/tmp/scatter_{int(time.time())}.png"
+            tmp_dir = tempfile.gettempdir()
+            plot_path = os.path.join(tmp_dir, f"scatter_{int(time.time())}.png")
             plt.savefig(plot_path)
             plt.close()
             
@@ -352,7 +356,8 @@ def main():
     service = ExplainabilityService(config)
     
     # Start Ray Serve
-    serve.start(http_options=HTTPOptions(host="0.0.0.0", port=8006))
+    host = os.getenv("SERVICE_HOST", "127.0.0.1")
+    serve.start(http_options=HTTPOptions(host=host, port=8006))
     
     # Deploy application
     serve.run(

@@ -1,6 +1,7 @@
 from typing import Dict, Any, Optional
 import time
-import random
+import secrets
+from random import SystemRandom
 import math
 
 class PhysicalService:
@@ -67,7 +68,7 @@ class PhysicalService:
         
         # Use provided duration or generate random one
         if duration is None:
-            duration = random.uniform(min_duration, max_duration)
+            duration = SystemRandom().uniform(min_duration, max_duration)
         else:
             duration = max(min_duration, min(duration, max_duration))
 
@@ -91,19 +92,19 @@ class PhysicalService:
         """
         Select appropriate movement pattern.
         """
-        return random.choice(movement_patterns)
+        return secrets.choice(movement_patterns)
 
     def _select_posture(self, body_postures: list) -> str:
         """
         Select appropriate body posture.
         """
-        return random.choice(body_postures)
+        return secrets.choice(body_postures)
 
     def _select_gait(self, gait_characteristics: list) -> str:
         """
         Select appropriate gait characteristics.
         """
-        return random.choice(gait_characteristics)
+        return secrets.choice(gait_characteristics)
 
     def _get_physical_characteristics(
         self,
@@ -160,7 +161,8 @@ class PhysicalService:
         }
 
         tensions = base_tensions.get(action, {"upper_body": 0.3, "core": 0.3, "lower_body": 0.3})
-        return {group: tension + random.uniform(-0.1, 0.1) for group, tension in tensions.items()}
+        rand = SystemRandom()
+        return {group: tension + rand.uniform(-0.1, 0.1) for group, tension in tensions.items()}
 
     def _calculate_movement_quality(
         self,

@@ -2,6 +2,7 @@ from typing import Optional
 from pydantic_settings import BaseSettings
 from pydantic import PostgresDsn, RedisDsn, validator
 import secrets
+import tempfile
 
 class Settings(BaseSettings):
     # Application
@@ -13,7 +14,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
     # Server
-    HOST: str = "0.0.0.0"
+    HOST: str = "127.0.0.1"
     PORT: int = 8000
     WORKERS: int = 4
     
@@ -73,7 +74,7 @@ class Settings(BaseSettings):
     # Monitoring
     ENABLE_METRICS: bool = True
     ENABLE_TRACING: bool = True
-    PROMETHEUS_MULTIPROC_DIR: str = "/tmp"
+    PROMETHEUS_MULTIPROC_DIR: str = tempfile.gettempdir()
     
     # AI Model Settings
     MODEL_PATH: str = "/app/models"

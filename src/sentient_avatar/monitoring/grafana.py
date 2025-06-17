@@ -35,7 +35,8 @@ class GrafanaDashboard:
         response = requests.post(
             f"{self.grafana_url}/api/dashboards/db",
             headers=self.headers,
-            json=dashboard
+            json=dashboard,
+            timeout=5
         )
         
         if response.status_code != 200:
@@ -52,7 +53,8 @@ class GrafanaDashboard:
         response = requests.post(
             f"{self.grafana_url}/api/dashboards/db",
             headers=self.headers,
-            json=dashboard
+            json=dashboard,
+            timeout=5
         )
         
         if response.status_code != 200:
@@ -65,7 +67,8 @@ class GrafanaDashboard:
         """Get dashboard by UID."""
         response = requests.get(
             f"{self.grafana_url}/api/dashboards/uid/{dashboard_uid}",
-            headers=self.headers
+            headers=self.headers,
+            timeout=5
         )
         
         if response.status_code != 200:
@@ -144,7 +147,8 @@ class GrafanaDashboard:
         response = requests.post(
             f"{self.grafana_url}/api/dashboards/db",
             headers=self.headers,
-            json=dashboard
+            json=dashboard,
+            timeout=5
         )
         
         if response.status_code != 200:
@@ -219,7 +223,8 @@ class GrafanaDashboard:
         response = requests.post(
             f"{self.grafana_url}/api/dashboards/db",
             headers=self.headers,
-            json=dashboard
+            json=dashboard,
+            timeout=5
         )
         
         if response.status_code != 200:
@@ -241,7 +246,8 @@ class GrafanaDashboard:
         response = requests.post(
             f"{self.grafana_url}/api/v1/provisioning/alert-rules",
             headers=self.headers,
-            json=alert_rule
+            json=alert_rule,
+            timeout=5
         )
         
         if response.status_code != 200:
@@ -262,7 +268,8 @@ class GrafanaDashboard:
         response = requests.post(
             f"{self.grafana_url}/api/alert-notifications",
             headers=self.headers,
-            json=channel
+            json=channel,
+            timeout=5
         )
         
         if response.status_code != 200:
