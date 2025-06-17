@@ -58,11 +58,12 @@ def setup_tracing(app):
     if settings.ENABLE_TRACING:
         trace.set_tracer_provider(TracerProvider())
         otlp_exporter = OTLPSpanExporter(
-            endpoint=f"{settings.ELASTICSEARCH_HOST}:{settings.ELASTICSEARCH_PORT}"
+            endpoint=settings.OTEL_EXPORTER_OTLP_ENDPOINT,
+            insecure=True,
         )
         span_processor = BatchSpanProcessor(otlp_exporter)
         trace.get_tracer_provider().add_span_processor(span_processor)
-        
+
         FastAPIInstrumentor.instrument_app(app)
 
 # Example usage:

@@ -73,6 +73,7 @@ class Settings(BaseSettings):
     # Monitoring
     ENABLE_METRICS: bool = True
     ENABLE_TRACING: bool = True
+    OTEL_EXPORTER_OTLP_ENDPOINT: str = "http://localhost:4317"
     PROMETHEUS_MULTIPROC_DIR: str = "/tmp"
     
     # AI Model Settings
