@@ -28,16 +28,19 @@ gh api --method PATCH /repos/stix26/sentient-avatar \
 # Set repository topics
 echo "Setting repository topics..."
 gh api --method PUT /repos/stix26/sentient-avatar/topics \
+    -H "Accept: application/vnd.github.mercy-preview+json" \
     -f names='["ai","avatar","emotional-intelligence","fastapi","python","machine-learning","docker","microservices"]'
 
 # Enable GitHub Pages
 echo "Enabling GitHub Pages..."
 gh api --method POST /repos/stix26/sentient-avatar/pages \
+    -H "Accept: application/vnd.github.switcheroo-preview+json" \
     -f source='{"branch":"gh-pages","path":"/"}'
 
 # Set up branch protection
 echo "Setting up branch protection..."
 gh api --method PUT /repos/stix26/sentient-avatar/branches/main/protection \
+    -H "Accept: application/vnd.github.luke-cage-preview+json" \
     -f required_status_checks='{"strict":true,"contexts":["CI","Documentation"]}' \
     -f enforce_admins=true \
     -f required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true,"require_code_owner_reviews":true}' \
