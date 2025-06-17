@@ -6,8 +6,7 @@ from sqlalchemy.orm import Session
 from src.config import settings
 from src.database import get_db
 from src.models.user import User
-from src.schemas.auth import Token, TokenPayload
-from src.schemas.user import UserCreate, UserResponse
+from src.schemas.user import Token, TokenPayload, UserCreate, UserResponse
 from src.security import (
     verify_password,
     get_password_hash,

@@ -7,7 +7,7 @@ from src.config import settings
 
 # Create SQLAlchemy engine
 engine = create_engine(
-    settings.DATABASE_URL,
+    str(settings.DATABASE_URL),
     poolclass=QueuePool,
     pool_size=5,
     max_overflow=10,
