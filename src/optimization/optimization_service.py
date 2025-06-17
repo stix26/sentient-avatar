@@ -321,7 +321,8 @@ def main():
     optimizer = ModelOptimizer(config)
     
     # Start Ray Serve
-    serve.start(http_options=HTTPOptions(host="0.0.0.0", port=8003))
+    host = os.getenv("SERVICE_HOST", "127.0.0.1")
+    serve.start(http_options=HTTPOptions(host=host, port=8003))
     
     # Deploy application
     serve.run(

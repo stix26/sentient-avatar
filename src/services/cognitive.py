@@ -1,6 +1,7 @@
 from typing import Dict, Any, Optional
 import time
-import random
+import secrets
+from random import SystemRandom
 
 class CognitiveService:
     def __init__(self):
@@ -62,7 +63,7 @@ class CognitiveService:
         state = {
             "operation": operation,
             "timestamp": time.time(),
-            "duration": random.uniform(min_duration, max_duration),
+            "duration": SystemRandom().uniform(min_duration, max_duration),
             "facial_expression": self._select_expression(cognitive_config["facial_expressions"]),
             "body_language": self._select_body_language(cognitive_config["body_language"]),
             "voice_characteristics": self._select_voice(cognitive_config["voice_characteristics"]),
@@ -79,19 +80,19 @@ class CognitiveService:
         """
         Select appropriate facial expression for cognitive state.
         """
-        return random.choice(expressions)
+        return secrets.choice(expressions)
 
     def _select_body_language(self, body_language: list) -> str:
         """
         Select appropriate body language for cognitive state.
         """
-        return random.choice(body_language)
+        return secrets.choice(body_language)
 
     def _select_voice(self, voice_characteristics: list) -> str:
         """
         Select appropriate voice characteristics for cognitive state.
         """
-        return random.choice(voice_characteristics)
+        return secrets.choice(voice_characteristics)
 
     def _get_operation_modifiers(
         self,

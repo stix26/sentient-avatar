@@ -151,7 +151,7 @@ class Config(BaseConfig):
     
     # Application settings
     debug: bool = Field(False, description="Debug mode")
-    host: str = Field("0.0.0.0", description="Host")
+    host: str = Field("127.0.0.1", description="Host")
     port: int = Field(8000, description="Port")
     workers: int = Field(1, description="Number of workers")
     
@@ -276,7 +276,7 @@ def get_default_config() -> Dict[str, Any]:
             'backup_count': 5
         },
         'debug': False,
-        'host': '0.0.0.0',
+        'host': '127.0.0.1',
         'port': 8000,
         'workers': 1
     } 

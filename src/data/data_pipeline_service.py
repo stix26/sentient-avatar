@@ -324,7 +324,8 @@ def main():
     pipeline = DataPipeline(config)
     
     # Start Ray Serve
-    serve.start(http_options=HTTPOptions(host="0.0.0.0", port=8002))
+    host = os.getenv("SERVICE_HOST", "127.0.0.1")
+    serve.start(http_options=HTTPOptions(host=host, port=8002))
     
     # Deploy application
     serve.run(

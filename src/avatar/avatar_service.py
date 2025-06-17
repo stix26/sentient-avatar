@@ -3,6 +3,7 @@ import json
 import time
 import logging
 import asyncio
+import tempfile
 import numpy as np
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Tuple
@@ -1341,7 +1342,7 @@ class AvatarRenderer:
                 "desire_level": self._calculate_desire_level(context),
                 "relationship_potential": self._evaluate_relationship_potential(context),
                 "growth_opportunities": self._identify_growth_opportunities(context)
-            })
+            }
 
     def _update_aesthetic_sensibility(self, context: Dict[str, Any]) -> None:
         """Update the avatar's aesthetic experiences and understanding."""
@@ -1638,7 +1639,8 @@ class AvatarService:
                 })
                 
                 # Log frame
-                frame_path = f"/tmp/avatar_frame_{int(time.time())}.png"
+                tmp_dir = tempfile.gettempdir()
+                frame_path = os.path.join(tmp_dir, f"avatar_frame_{int(time.time())}.png")
                 cv2.imwrite(frame_path, avatar_frame)
                 mlflow.log_artifact(frame_path)
                 
@@ -1689,7 +1691,8 @@ def main():
     service = AvatarService(config)
     
     # Start Ray Serve
-    serve.start(http_options=HTTPOptions(host="0.0.0.0", port=8007))
+    host = os.getenv("SERVICE_HOST", "127.0.0.1")
+    serve.start(http_options=HTTPOptions(host=host, port=8007))
     
     # Deploy application
     serve.run(
