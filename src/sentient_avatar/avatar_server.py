@@ -11,6 +11,12 @@ import os
 from pathlib import Path
 
 from .services.factory import ServiceFactory
+from .services.llm import LLMService
+from .services.asr import ASRService
+from .services.tts import TTSService
+from .services.avatar import AvatarService
+from .services.vision import VisionService
+from .services.vector_store import VectorStoreService
 from .config.config import Config, load_config
 from .logging.logger import get_logger
 from .monitoring.metrics import MetricsCollector
