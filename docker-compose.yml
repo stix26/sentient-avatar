@@ -1,0 +1,347 @@
+version: '3.8'
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "100m"
+    max-file: "3"
+
+x-healthcheck: &default-healthcheck
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s
+
+services:
+  # Infrastructure Services
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--configFile=/etc/traefik/traefik.yml"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - ./config/traefik:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-certificates:/etc/traefik/certificates
+    networks:
+      - sentient_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.sentient-avatar.local`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$xyz123"
+    logging: *default-logging
+    healthcheck: *default-healthcheck
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      <<: *default-healthcheck
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      <<: *default-healthcheck
+
+  vault:
+    image: vault:1.15
+    volumes:
+      - ./config/vault:/vault/config
+      - vault-data:/vault/data
+      - vault-logs:/vault/logs
+    cap_add:
+      - IPC_LOCK
+    environment:
+      - VAULT_ADDR=https://127.0.0.1:8200
+      - VAULT_API_ADDR=https://0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      <<: *default-healthcheck
+
+  # Monitoring Stack
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/-/healthy"]
+      <<: *default-healthcheck
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      <<: *default-healthcheck
+
+  # Logging Stack
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 >/dev/null || exit 1"]
+      <<: *default-healthcheck
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      <<: *default-healthcheck
+
+  # Vector store for long-term memory
+  qdrant:
+    image: qdrant/qdrant:v1.7.0
+    volumes:
+      - ./config/qdrant:/qdrant/config
+      - qdrant-data:/qdrant/storage
+    command: --config-path /qdrant/config/config.yaml
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      <<: *default-healthcheck
+    restart: unless-stopped
+
+  # LLM service (vLLM for GPU, llama.cpp for CPU)
+  llm:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.llm
+    volumes:
+      - ./models:/models
+    environment:
+      - MODEL_PATH=/models/llama-2-7b-chat.gguf
+      - NUM_GPU_LAYERS=32
+      - NUM_THREADS=8
+    networks:
+      - sentient_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      <<: *default-healthcheck
+    restart: unless-stopped
+
+  # ASR service (whisper.cpp)
+  asr:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.asr
+    volumes:
+      - ./models:/models
+    environment:
+      - MODEL_PATH=/models/whisper-medium.en.gguf
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      <<: *default-healthcheck
+    restart: unless-stopped
+
+  # TTS service (Bark + XTTS)
+  tts:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.tts
+    volumes:
+      - ./models:/models
+    environment:
+      - MODEL_PATH=/models/xtts-v2
+    networks:
+      - sentient_net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      <<: *default-healthcheck
+    restart: unless-stopped
+
+  # Avatar service (SadTalker)
+  avatar:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.avatar
+    volumes:
+      - ./models:/models
+    environment:
+      - MODEL_PATH=/models/sadtalker
+    networks:
+      - sentient_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      <<: *default-healthcheck
+    restart: unless-stopped
+
+  # Vision service (LLaVA-NeXT)
+  vision:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.vision
+    volumes:
+      - ./models:/models
+    environment:
+      - MODEL_PATH=/models/llava-next
+    networks:
+      - sentient_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      <<: *default-healthcheck
+    restart: unless-stopped
+
+  # Main API service (FastAPI)
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - LOG_LEVEL=debug
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - elasticsearch
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      <<: *default-healthcheck
+    restart: unless-stopped
+
+  # Web UI (SillyTavern)
+  ui:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.ui
+    volumes:
+      - ./src:/app
+    networks:
+      - sentient_net
+    depends_on:
+      - api
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8006/health"]
+      <<: *default-healthcheck
+    restart: unless-stopped
+
+networks:
+  sentient_net:
+    driver: bridge
+
+volumes:
+  traefik-certificates:
+  redis-data:
+  rabbitmq-data:
+  elasticsearch-data:
+  qdrant-data:
+  consul-data:
+  vault-data:
+  vault-logs:
+  prometheus-data:
+  grafana-data:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
+  elasticsearch_data:
+  prometheus_data:
+  grafana_data: 

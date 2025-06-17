@@ -1,0 +1,72 @@
+{
+  "datacenter": "sentient-avatar",
+  "data_dir": "/consul/data",
+  "log_level": "INFO",
+  "node_name": "consul-server",
+  "server": true,
+  "bootstrap_expect": 3,
+  "client_addr": "0.0.0.0",
+  "bind_addr": "0.0.0.0",
+  "advertise_addr": "{{ GetInterfaceIP \"eth0\" }}",
+  "retry_join": [
+    "consul-server-1",
+    "consul-server-2",
+    "consul-server-3"
+  ],
+  "ui_config": {
+    "enabled": true
+  },
+  "performance": {
+    "raft_multiplier": 1,
+    "leave_drain_time": "5s"
+  },
+  "telemetry": {
+    "disable_hostname": true,
+    "prometheus_retention_time": "24h"
+  },
+  "acl": {
+    "enabled": true,
+    "default_policy": "deny",
+    "enable_token_persistence": true,
+    "tokens": {
+      "master": "${CONSUL_MASTER_TOKEN}",
+      "agent": "${CONSUL_AGENT_TOKEN}"
+    }
+  },
+  "encrypt": "${CONSUL_ENCRYPT_KEY}",
+  "verify_incoming": true,
+  "verify_outgoing": true,
+  "verify_server_hostname": true,
+  "ca_file": "/consul/config/certs/ca.pem",
+  "cert_file": "/consul/config/certs/consul.pem",
+  "key_file": "/consul/config/certs/consul-key.pem",
+  "ports": {
+    "http": 8500,
+    "https": 8501,
+    "grpc": 8502,
+    "grpc_tls": 8503,
+    "dns": 8600,
+    "serf_lan": 8301,
+    "serf_wan": 8302,
+    "server": 8300
+  },
+  "connect": {
+    "enabled": true
+  },
+  "session_ttl_min": "10s",
+  "reconnect_timeout": "72h",
+  "reconnect_timeout_wan": "72h",
+  "raft_protocol": 3,
+  "raft_snapshot_threshold": 8192,
+  "raft_snapshot_interval": "30s",
+  "raft_trailing_logs": 10240,
+  "autopilot": {
+    "cleanup_dead_servers": true,
+    "last_contact_threshold": "200ms",
+    "max_trailing_logs": 250,
+    "server_stabilization_time": "10s",
+    "redundancy_zone_tag": "az",
+    "disable_upgrade_migration": false,
+    "upgrade_version_tag": "version"
+  }
+} 

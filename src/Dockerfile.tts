@@ -1,0 +1,40 @@
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up Python environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install TTS dependencies
+RUN pip install --no-cache-dir \
+    torch==2.1.0 \
+    torchaudio==2.1.0 \
+    transformers==4.35.0 \
+    soundfile==0.12.1 \
+    librosa==0.10.1
+
+# Copy service code
+COPY tts_service.py .
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV MODEL_PATH=/models/xtts-v2
+ENV CUDA_VISIBLE_DEVICES=0
+
+# Expose port
+EXPOSE 8002
+
+# Run the service
+CMD ["python3", "tts_service.py"] 

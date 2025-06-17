@@ -1,0 +1,57 @@
+cluster.name: "sentient-avatar"
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+discovery.type: single-node
+
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.http.ssl.enabled: true
+
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+
+xpack.security.http.ssl.keystore.path: elastic-certificates.p12
+xpack.security.http.ssl.truststore.path: elastic-certificates.p12
+
+xpack.monitoring.enabled: true
+xpack.monitoring.collection.enabled: true
+
+path.data: /usr/share/elasticsearch/data
+path.logs: /usr/share/elasticsearch/logs
+
+bootstrap.memory_lock: true
+bootstrap.system_call_filter: false
+
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+http.cors.allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+http.cors.allow-headers: X-Requested-With, X-Auth-Token, Content-Type, Content-Length, Authorization
+
+indices.query.bool.max_clause_count: 8192
+indices.memory.index_buffer_size: 30%
+indices.breaker.total.use_real_memory: true
+indices.breaker.total.limit: 70%
+indices.breaker.fielddata.limit: 40%
+indices.breaker.request.limit: 40%
+
+search.max_buckets: 10000
+search.max_keep_alive: 24h
+
+thread_pool.write.size: 16
+thread_pool.write.queue_size: 1000
+thread_pool.get.size: 16
+thread_pool.get.queue_size: 1000
+thread_pool.search.size: 16
+thread_pool.search.queue_size: 1000
+
+logger.level: INFO
+action.auto_create_index: false
+
+action.destructive_requires_name: true
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.low: 85%
+cluster.routing.allocation.disk.watermark.high: 90%
+cluster.routing.allocation.disk.watermark.flood_stage: 95% 

@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'Sentient Avatar'
+    orgId: 1
+    folder: 'Sentient Avatar'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards 

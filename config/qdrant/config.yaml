@@ -1,0 +1,59 @@
+storage:
+  storage_path: /qdrant/storage
+  snapshots_path: /qdrant/snapshots
+  on_disk_payload: true
+  optimizers:
+    indexing_threshold: 20000
+    memmap_threshold: 50000
+    max_optimization_threads: 4
+    default_segment_number: 2
+    max_segment_size: 50000
+    memmap_threshold_kb: 2000
+    payload_indexing_threshold: 1000
+    flush_interval_sec: 5
+    max_optimization_threads: 4
+
+service:
+  host: 0.0.0.0
+  port: 6333
+  http_port: 6334
+  max_request_size_mb: 32
+  max_workers: 0  # 0 means auto
+  enable_cors: true
+
+cluster:
+  enabled: false
+  p2p:
+    port: 6335
+  consensus:
+    tick_period_ms: 100
+    bootstrap_timeout_sec: 5
+    first_listen_port: 6335
+
+performance:
+  max_search_threads: 4
+  max_optimization_threads: 4
+  max_compaction_threads: 4
+  max_search_threads: 4
+  max_optimization_threads: 4
+  max_compaction_threads: 4
+
+telemetry:
+  enabled: false
+  host: https://telemetry.qdrant.io
+  interval_sec: 3600
+
+logging:
+  level: INFO
+  log_path: /qdrant/logs/qdrant.log
+  log_format: json
+
+security:
+  api_key: ${QDRANT_API_KEY}
+  tls:
+    enabled: true
+    cert_path: /qdrant/certs/cert.pem
+    key_path: /qdrant/certs/key.pem
+    ca_cert_path: /qdrant/certs/ca.pem
+
+log_level: INFO 

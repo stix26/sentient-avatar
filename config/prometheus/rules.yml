@@ -1,0 +1,123 @@
+groups:
+  - name: sentient-avatar
+    rules:
+      # System alerts
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High CPU usage detected
+          description: CPU usage is above 80% for 5 minutes
+
+      - alert: HighMemoryUsage
+        expr: 100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High memory usage detected
+          description: Memory usage is above 85% for 5 minutes
+
+      - alert: HighDiskUsage
+        expr: 100 * (1 - node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High disk usage detected
+          description: Disk usage is above 85% for 5 minutes
+
+      # Service alerts
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Service is down
+          description: Service {{ $labels.job }} has been down for more than 1 minute
+
+      - alert: HighLatency
+        expr: rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High latency detected
+          description: Service {{ $labels.job }} has high latency
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High error rate detected
+          description: Service {{ $labels.job }} has high error rate
+
+      # Infrastructure alerts
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Redis is down
+          description: Redis instance has been down for more than 1 minute
+
+      - alert: RabbitMQDown
+        expr: rabbitmq_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: RabbitMQ is down
+          description: RabbitMQ instance has been down for more than 1 minute
+
+      - alert: ElasticsearchDown
+        expr: elasticsearch_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Elasticsearch is down
+          description: Elasticsearch instance has been down for more than 1 minute
+
+      - alert: QdrantDown
+        expr: qdrant_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Qdrant is down
+          description: Qdrant instance has been down for more than 1 minute
+
+      # Security alerts
+      - alert: HighFailedLoginAttempts
+        expr: rate(auth_failed_total[5m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High number of failed login attempts
+          description: More than 5 failed login attempts per minute
+
+      - alert: HighRequestRate
+        expr: rate(http_requests_total[5m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High request rate detected
+          description: More than 1000 requests per minute
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"4..|5.."}[5m]) / rate(http_requests_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High error rate detected
+          description: More than 10% of requests are failing 

@@ -1,0 +1,30 @@
+FROM node:18-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone SillyTavern
+WORKDIR /app
+RUN git clone https://github.com/SillyTavern/SillyTavern.git . && \
+    git checkout stable
+
+# Install dependencies
+RUN npm install
+
+# Copy custom configuration
+COPY ui_config.js ./public/config.js
+
+# Build the application
+RUN npm run build
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Expose port
+EXPOSE 3000
+
+# Run the service
+CMD ["npm", "start"] 

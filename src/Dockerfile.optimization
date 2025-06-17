@@ -1,0 +1,47 @@
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up Python virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Upgrade pip and install build tools
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install optimization-specific dependencies
+RUN pip install --no-cache-dir \
+    torch==2.1.0 \
+    torchvision==0.16.0 \
+    transformers==4.35.0 \
+    ray[serve]==2.7.0 \
+    mlflow==2.8.0 \
+    prometheus-client==0.17.1 \
+    fastapi==0.104.1 \
+    uvicorn==0.24.0 \
+    pydantic==2.4.2
+
+# Copy service code
+COPY optimization_service.py /app/
+COPY requirements.txt /app/
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+ENV CUDA_VISIBLE_DEVICES=0
+
+# Expose port
+EXPOSE 8003
+
+# Run service
+CMD ["python", "optimization_service.py"] 

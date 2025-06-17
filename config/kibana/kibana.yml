@@ -1,0 +1,47 @@
+server.name: kibana
+server.host: "0.0.0.0"
+server.port: 5601
+
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+elasticsearch.username: kibana_system
+elasticsearch.password: ${KIBANA_PASSWORD}
+
+monitoring.ui.container.elasticsearch.enabled: true
+monitoring.ui.container.logstash.enabled: true
+
+xpack.security.enabled: true
+xpack.reporting.enabled: true
+xpack.reporting.capture.browser.chromium.disableSandbox: false
+xpack.reporting.queue.timeout: 120000
+
+xpack.encryptedSavedObjects.encryptionKey: ${ENCRYPTION_KEY}
+xpack.encryptedSavedObjects.keyRotationDecryptionOnly: false
+
+xpack.security.audit.enabled: true
+xpack.security.audit.appender.type: file
+xpack.security.audit.appender.fileName: /var/log/kibana/audit.log
+xpack.security.audit.appender.layout.type: json
+
+telemetry.enabled: false
+telemetry.allowChangingOptInStatus: false
+
+logging:
+  appenders:
+    file:
+      type: file
+      fileName: /var/log/kibana/kibana.log
+      layout:
+        type: json
+  root:
+    appenders: [file]
+    level: info
+
+elasticsearch.ssl.verificationMode: certificate
+elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/config/certs/ca.crt"]
+elasticsearch.ssl.certificate: "/usr/share/kibana/config/certs/kibana.crt"
+elasticsearch.ssl.key: "/usr/share/kibana/config/certs/kibana.key"
+
+server.ssl.enabled: true
+server.ssl.certificate: "/usr/share/kibana/config/certs/kibana.crt"
+server.ssl.key: "/usr/share/kibana/config/certs/kibana.key"
+server.ssl.certificateAuthorities: ["/usr/share/kibana/config/certs/ca.crt"] 

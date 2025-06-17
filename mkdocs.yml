@@ -1,0 +1,349 @@
+site_name: Sentient Avatar
+site_description: A sentient avatar system with emotional intelligence
+site_author: Your Name
+repo_url: https://github.com/yourusername/sentient-avatar
+repo_name: sentient-avatar
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - search.suggest
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - admonition
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          selection:
+            docstring_style: google
+            docstring_options:
+              trim_doctest_flags: true
+          rendering:
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+            show_if_no_docstring: true
+            show_signature_annotations: true
+            show_signature_return_annotations: true
+            show_bases: true
+            show_submodules: true
+            heading_level: 2
+            merge_init_into_class: true
+            docstring_section_style: table
+            line_length: 100
+            show_signature: true
+            show_signature_return: true
+            show_signature_parameters: true
+            show_signature_parameters_default: true
+            show_signature_parameters_type: true
+            show_signature_parameters_return: true
+            show_signature_parameters_return_type: true
+            show_signature_parameters_return_annotation: true
+            show_signature_parameters_return_description: true
+            show_signature_parameters_return_default: true
+            show_signature_parameters_return_required: true
+            show_signature_parameters_return_optional: true
+            show_signature_parameters_return_kwargs: true
+            show_signature_parameters_return_args: true
+            show_signature_parameters_return_varargs: true
+            show_signature_parameters_return_varkwargs: true
+            show_signature_parameters_return_self: true
+            show_signature_parameters_return_cls: true
+            show_signature_parameters_return_other: true
+            show_signature_parameters_return_any: true
+            show_signature_parameters_return_none: true
+            show_signature_parameters_return_void: true
+            show_signature_parameters_return_unknown: true
+            show_signature_parameters_return_undefined: true
+            show_signature_parameters_return_null: true
+            show_signature_parameters_return_empty: true
+            show_signature_parameters_return_zero: true
+            show_signature_parameters_return_false: true
+            show_signature_parameters_return_true: true
+            show_signature_parameters_return_inf: true
+            show_signature_parameters_return_nan: true
+            show_signature_parameters_return_complex: true
+            show_signature_parameters_return_float: true
+            show_signature_parameters_return_int: true
+            show_signature_parameters_return_str: true
+            show_signature_parameters_return_bytes: true
+            show_signature_parameters_return_list: true
+            show_signature_parameters_return_tuple: true
+            show_signature_parameters_return_dict: true
+            show_signature_parameters_return_set: true
+            show_signature_parameters_return_frozenset: true
+            show_signature_parameters_return_deque: true
+            show_signature_parameters_return_counter: true
+            show_signature_parameters_return_defaultdict: true
+            show_signature_parameters_return_ordereddict: true
+            show_signature_parameters_return_chainmap: true
+            show_signature_parameters_return_namedtuple: true
+            show_signature_parameters_return_enum: true
+            show_signature_parameters_return_enum_member: true
+            show_signature_parameters_return_enum_auto: true
+            show_signature_parameters_return_enum_flag: true
+            show_signature_parameters_return_enum_intflag: true
+            show_signature_parameters_return_enum_intenum: true
+            show_signature_parameters_return_enum_str: true
+            show_signature_parameters_return_enum_int: true
+            show_signature_parameters_return_enum_float: true
+            show_signature_parameters_return_enum_bool: true
+            show_signature_parameters_return_enum_complex: true
+            show_signature_parameters_return_enum_bytes: true
+            show_signature_parameters_return_enum_bytearray: true
+            show_signature_parameters_return_enum_memoryview: true
+            show_signature_parameters_return_enum_slice: true
+            show_signature_parameters_return_enum_range: true
+            show_signature_parameters_return_enum_xrange: true
+            show_signature_parameters_return_enum_zip: true
+            show_signature_parameters_return_enum_enumerate: true
+            show_signature_parameters_return_enum_filter: true
+            show_signature_parameters_return_enum_map: true
+            show_signature_parameters_return_enum_reversed: true
+            show_signature_parameters_return_enum_sorted: true
+            show_signature_parameters_return_enum_any: true
+            show_signature_parameters_return_enum_all: true
+            show_signature_parameters_return_enum_sum: true
+            show_signature_parameters_return_enum_min: true
+            show_signature_parameters_return_enum_max: true
+            show_signature_parameters_return_enum_len: true
+            show_signature_parameters_return_enum_abs: true
+            show_signature_parameters_return_enum_round: true
+            show_signature_parameters_return_enum_divmod: true
+            show_signature_parameters_return_enum_pow: true
+            show_signature_parameters_return_enum_bin: true
+            show_signature_parameters_return_enum_oct: true
+            show_signature_parameters_return_enum_hex: true
+            show_signature_parameters_return_enum_ord: true
+            show_signature_parameters_return_enum_chr: true
+            show_signature_parameters_return_enum_ascii: true
+            show_signature_parameters_return_enum_repr: true
+            show_signature_parameters_return_enum_str: true
+            show_signature_parameters_return_enum_bytes: true
+            show_signature_parameters_return_enum_format: true
+            show_signature_parameters_return_enum_vars: true
+            show_signature_parameters_return_enum_dir: true
+            show_signature_parameters_return_enum_type: true
+            show_signature_parameters_return_enum_isinstance: true
+            show_signature_parameters_return_enum_issubclass: true
+            show_signature_parameters_return_enum_hasattr: true
+            show_signature_parameters_return_enum_getattr: true
+            show_signature_parameters_return_enum_setattr: true
+            show_signature_parameters_return_enum_delattr: true
+            show_signature_parameters_return_enum_callable: true
+            show_signature_parameters_return_enum_hash: true
+            show_signature_parameters_return_enum_id: true
+            show_signature_parameters_return_enum_globals: true
+            show_signature_parameters_return_enum_locals: true
+            show_signature_parameters_return_enum_import: true
+            show_signature_parameters_return_enum_reload: true
+            show_signature_parameters_return_enum_compile: true
+            show_signature_parameters_return_enum_eval: true
+            show_signature_parameters_return_enum_exec: true
+            show_signature_parameters_return_enum_open: true
+            show_signature_parameters_return_enum_print: true
+            show_signature_parameters_return_enum_input: true
+            show_signature_parameters_return_enum_raw_input: true
+            show_signature_parameters_return_enum_help: true
+            show_signature_parameters_return_enum_quit: true
+            show_signature_parameters_return_enum_exit: true
+            show_signature_parameters_return_enum_copyright: true
+            show_signature_parameters_return_enum_credits: true
+            show_signature_parameters_return_enum_license: true
+            show_signature_parameters_return_enum_author: true
+            show_signature_parameters_return_enum_version: true
+            show_signature_parameters_return_enum_platform: true
+            show_signature_parameters_return_enum_implementation: true
+            show_signature_parameters_return_enum_compiler: true
+            show_signature_parameters_return_enum_python: true
+            show_signature_parameters_return_enum_python_version: true
+            show_signature_parameters_return_enum_python_implementation: true
+            show_signature_parameters_return_enum_python_compiler: true
+            show_signature_parameters_return_enum_python_build: true
+            show_signature_parameters_return_enum_python_build_no: true
+            show_signature_parameters_return_enum_python_build_date: true
+            show_signature_parameters_return_enum_python_build_time: true
+            show_signature_parameters_return_enum_python_build_platform: true
+            show_signature_parameters_return_enum_python_build_os: true
+            show_signature_parameters_return_enum_python_build_machine: true
+            show_signature_parameters_return_enum_python_build_cpu: true
+            show_signature_parameters_return_enum_python_build_compiler: true
+            show_signature_parameters_return_enum_python_build_compiler_version: true
+            show_signature_parameters_return_enum_python_build_compiler_flags: true
+            show_signature_parameters_return_enum_python_build_compiler_define: true
+            show_signature_parameters_return_enum_python_build_compiler_undef: true
+            show_signature_parameters_return_enum_python_build_compiler_include: true
+            show_signature_parameters_return_enum_python_build_compiler_lib: true
+            show_signature_parameters_return_enum_python_build_compiler_libdir: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs: true
+            show_signature_parameters_return_enum_python_build_compiler_libs: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_extra: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_extra: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_system: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_system: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_user: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_user: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_site: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_site: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_distutils: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_distutils: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_setuptools: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_setuptools: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_pip: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_pip: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_wheel: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_wheel: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_pytest: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_pytest: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_black: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_black: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_isort: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_isort: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_flake8: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_flake8: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_mypy: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_mypy: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_ruff: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_ruff: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_pylint: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_pylint: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_bandit: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_bandit: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_safety: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_safety: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_pip_tools: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_pip_tools: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_watchdog: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_watchdog: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_ipython: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_ipython: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_jupyter: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_jupyter: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_debugpy: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_debugpy: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_memory_profiler: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_memory_profiler: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_line_profiler: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_line_profiler: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_alembic: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_alembic: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_psycopg2: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_psycopg2: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_asyncpg: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_asyncpg: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_prometheus_client: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_prometheus_client: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_opentelemetry_api: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_opentelemetry_api: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_opentelemetry_sdk: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_opentelemetry_sdk: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_opentelemetry_instrumentation_fastapi: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_opentelemetry_instrumentation_fastapi: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_opentelemetry_exporter_otlp: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_opentelemetry_exporter_otlp: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_structlog: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_structlog: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_cryptography: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_cryptography: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_python_jose: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_python_jose: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_passlib: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_passlib: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_bcrypt: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_bcrypt: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_python_multipart: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_python_multipart: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_python_dotenv: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_python_dotenv: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_tenacity: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_tenacity: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_pydantic: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_pydantic: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_pydantic_settings: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_pydantic_settings: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_email_validator: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_email_validator: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_mkdocs: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_mkdocs: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_mkdocs_material: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_mkdocs_material: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_mkdocstrings: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_mkdocstrings: true
+            show_signature_parameters_return_enum_python_build_compiler_libdirs_mkdocstrings_python: true
+            show_signature_parameters_return_enum_python_build_compiler_libs_mkdocstrings_python: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Configuration: getting-started/configuration.md
+    - Quick Start: getting-started/quick-start.md
+  - User Guide:
+    - Authentication: user-guide/authentication.md
+    - Users: user-guide/users.md
+    - Avatars: user-guide/avatars.md
+    - Streaming: user-guide/streaming.md
+  - API Reference:
+    - Overview: api/overview.md
+    - Authentication: api/authentication.md
+    - Users: api/users.md
+    - Avatars: api/avatars.md
+    - Streaming: api/streaming.md
+  - Development:
+    - Contributing: development/contributing.md
+    - Testing: development/testing.md
+    - Deployment: development/deployment.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Components: architecture/components.md
+    - Data Flow: architecture/data-flow.md
+    - Security: architecture/security.md
+  - Monitoring:
+    - Overview: monitoring/overview.md
+    - Metrics: monitoring/metrics.md
+    - Alerts: monitoring/alerts.md
+    - Logging: monitoring/logging.md 
