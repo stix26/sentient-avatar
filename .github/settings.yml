@@ -1,0 +1,61 @@
+repository:
+  name: sentient-avatar
+  description: A sophisticated avatar system with emotional intelligence
+  homepage: https://github.com/stix26/sentient-avatar
+  topics:
+    - ai
+    - avatar
+    - emotional-intelligence
+    - fastapi
+    - python
+    - machine-learning
+    - docker
+    - microservices
+
+  # Features
+  has_issues: true
+  has_wiki: true
+  has_discussions: true
+  has_projects: true
+
+  # Branch protection
+  branches:
+    - name: main
+      protection:
+        required_status_checks:
+          strict: true
+          contexts:
+            - "CI"
+            - "Documentation"
+        enforce_admins: true
+        required_pull_request_reviews:
+          required_approving_review_count: 1
+          dismiss_stale_reviews: true
+          require_code_owner_reviews: true
+        restrictions: null
+
+  # Collaborators
+  collaborators:
+    - username: stix26
+      permission: admin
+
+  # Labels
+  labels:
+    - name: bug
+      color: d73a4a
+      description: Something isn't working
+    - name: enhancement
+      color: a2eeef
+      description: New feature or request
+    - name: documentation
+      color: 0075ca
+      description: Improvements or additions to documentation
+    - name: good first issue
+      color: 7057ff
+      description: Good for newcomers
+    - name: help wanted
+      color: 008672
+      description: Extra attention is needed
+    - name: question
+      color: d876e3
+      description: Further information is requested 
