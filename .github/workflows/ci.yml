@@ -128,7 +128,31 @@ jobs:
                   "informationUri": "https://bandit.readthedocs.io/"
                 }
               },
-              "results": ($results | fromjson)
+              "results": ($results | fromjson | map({
+                "message": {
+                  "text": .issue_text
+                },
+                "level": (if .issue_severity == "HIGH" then "error" elif .issue_severity == "MEDIUM" then "warning" else "note" end),
+                "locations": [{
+                  "physicalLocation": {
+                    "artifactLocation": {
+                      "uri": .filename
+                    },
+                    "region": {
+                      "startLine": .line_number,
+                      "startColumn": .col_offset,
+                      "endColumn": .end_col_offset
+                    }
+                  }
+                }],
+                "properties": {
+                  "issue_confidence": .issue_confidence,
+                  "issue_cwe": .issue_cwe,
+                  "test_id": .test_id,
+                  "test_name": .test_name,
+                  "more_info": .more_info
+                }
+              }))
             }
           ]
         }' > bandit-sarif.json
