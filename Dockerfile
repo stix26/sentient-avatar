@@ -25,15 +25,15 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && \
     # Install base dependencies first
     pip install --no-cache-dir setuptools wheel && \
-    # Install crewai and its dependencies first
-    pip install --no-cache-dir crewai==0.130.0 && \
-    # Install transformers with compatible tokenizers
-    pip install --no-cache-dir "tokenizers>=0.20.3" && \
+    # Install transformers with its required tokenizers version
+    pip install --no-cache-dir "tokenizers>=0.14,<0.19" && \
     pip install --no-cache-dir transformers==4.37.2 && \
     # Install core dependencies
     pip install --no-cache-dir fastapi uvicorn sqlalchemy psycopg2-binary redis && \
     # Install remaining dependencies
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    # Install crewai with compatible tokenizers
+    pip install --no-cache-dir --no-deps crewai==0.130.0
 
 # Copy project files
 COPY . .
