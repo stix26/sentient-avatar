@@ -23,11 +23,11 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     
     # Database
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-    POSTGRES_HOST: str
-    POSTGRES_PORT: str
+    POSTGRES_USER: str = "user"
+    POSTGRES_PASSWORD: str = "password"
+    POSTGRES_DB: str = "sentient_avatar"
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: str = "5432"
     DATABASE_URL: Optional[PostgresDsn] = None
 
     @validator("DATABASE_URL", pre=True)
@@ -39,13 +39,13 @@ class Settings(BaseSettings):
             username=values.get("POSTGRES_USER"),
             password=values.get("POSTGRES_PASSWORD"),
             host=values.get("POSTGRES_HOST"),
-            port=values.get("POSTGRES_PORT"),
+            port=int(values.get("POSTGRES_PORT") or 0),
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
     
     # Redis
-    REDIS_HOST: str
-    REDIS_PORT: str
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: str = "6379"
     REDIS_DB: int = 0
     REDIS_URL: Optional[RedisDsn] = None
 
@@ -56,23 +56,24 @@ class Settings(BaseSettings):
         return RedisDsn.build(
             scheme="redis",
             host=values.get("REDIS_HOST"),
-            port=values.get("REDIS_PORT"),
+            port=int(values.get("REDIS_PORT") or 0),
             path=f"/{values.get('REDIS_DB') or 0}",
         )
     
     # RabbitMQ
-    RABBITMQ_HOST: str
-    RABBITMQ_PORT: str
-    RABBITMQ_USER: str
-    RABBITMQ_PASSWORD: str
+    RABBITMQ_HOST: str = "localhost"
+    RABBITMQ_PORT: str = "5672"
+    RABBITMQ_USER: str = "guest"
+    RABBITMQ_PASSWORD: str = "guest"
     
     # Elasticsearch
-    ELASTICSEARCH_HOST: str
-    ELASTICSEARCH_PORT: str
+    ELASTICSEARCH_HOST: str = "localhost"
+    ELASTICSEARCH_PORT: str = "9200"
     
     # Monitoring
     ENABLE_METRICS: bool = True
     ENABLE_TRACING: bool = True
+    OTEL_EXPORTER_OTLP_ENDPOINT: str = "http://localhost:4317"
     PROMETHEUS_MULTIPROC_DIR: str = "/tmp"
     
     # AI Model Settings

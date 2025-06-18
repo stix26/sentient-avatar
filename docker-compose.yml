@@ -293,6 +293,7 @@ services:
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - ELASTICSEARCH_HOST=elasticsearch
       - ELASTICSEARCH_PORT=9200
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://elasticsearch:9200
     volumes:
       - .:/app
     depends_on:

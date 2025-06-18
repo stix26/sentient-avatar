@@ -30,6 +30,9 @@ class UserInDBBase(UserBase):
 class User(UserInDBBase):
     pass
 
+class UserResponse(UserInDBBase):
+    pass
+
 class UserInDB(UserInDBBase):
     hashed_password: str
 

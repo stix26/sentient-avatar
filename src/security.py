@@ -67,6 +67,13 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
+async def get_current_superuser(
+    current_user: User = Depends(get_current_user)
+) -> User:
+    if not current_user.is_superuser:
+        raise HTTPException(status_code=400, detail="Not enough privileges")
+    return current_user
+
 def verify_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
