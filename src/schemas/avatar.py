@@ -2,6 +2,7 @@ from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 from datetime import datetime
 
+
 class AvatarBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     description: Optional[str] = Field(None, max_length=500)
@@ -9,8 +10,10 @@ class AvatarBase(BaseModel):
     appearance: Dict[str, Any] = Field(default_factory=dict)
     voice: Dict[str, Any] = Field(default_factory=dict)
 
+
 class AvatarCreate(AvatarBase):
     pass
+
 
 class AvatarUpdate(AvatarBase):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
@@ -18,20 +21,24 @@ class AvatarUpdate(AvatarBase):
     appearance: Optional[Dict[str, Any]] = None
     voice: Optional[Dict[str, Any]] = None
 
+
 class EmotionUpdate(BaseModel):
     emotion: str = Field(..., min_length=1, max_length=50)
     intensity: float = Field(..., ge=0.0, le=1.0)
     context: Optional[Dict[str, Any]] = None
+
 
 class CognitiveUpdate(BaseModel):
     operation: str = Field(..., min_length=1, max_length=50)
     input_data: Dict[str, Any] = Field(default_factory=dict)
     parameters: Optional[Dict[str, Any]] = None
 
+
 class PhysicalUpdate(BaseModel):
     action: str = Field(..., min_length=1, max_length=50)
     parameters: Dict[str, Any] = Field(default_factory=dict)
     duration: Optional[float] = Field(None, ge=0.0)
+
 
 class AvatarResponse(AvatarBase):
     id: int
@@ -43,4 +50,4 @@ class AvatarResponse(AvatarBase):
     current_physical_state: Optional[Dict[str, Any]] = None
 
     class Config:
-        orm_mode = True 
+        from_attributes = True

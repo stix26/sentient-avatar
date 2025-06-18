@@ -76,6 +76,11 @@ jobs:
           sleep 5
         done
         exit 1
+
+    - name: Debug Docker network
+      run: |
+        echo "Docker network status:" && docker network ls
+        echo "Docker containers:" && docker ps -a
     
     - name: Run tests
       env:

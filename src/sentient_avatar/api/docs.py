@@ -5,11 +5,12 @@ import json
 import yaml
 from pathlib import Path
 
+
 def custom_openapi(app: FastAPI) -> Dict[str, Any]:
     """Generate custom OpenAPI schema."""
     if app.openapi_schema:
         return app.openapi_schema
-    
+
     openapi_schema = get_openapi(
         title="Sentient Avatar API",
         version="1.0.0",
@@ -63,58 +64,49 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
         """,
         routes=app.routes,
     )
-    
+
     # Add security schemes
     openapi_schema["components"]["securitySchemes"] = {
         "bearerAuth": {
             "type": "http",
             "scheme": "bearer",
             "bearerFormat": "JWT",
-            "description": "Enter your JWT token in the format: Bearer <token>"
+            "description": "Enter your JWT token in the format: Bearer <token>",
         },
         "apiKeyAuth": {
             "type": "apiKey",
             "in": "header",
             "name": "X-API-Key",
-            "description": "Enter your API key"
-        }
+            "description": "Enter your API key",
+        },
     }
-    
+
     # Add global security requirement
     openapi_schema["security"] = [{"bearerAuth": []}]
-    
+
     # Add tags
     openapi_schema["tags"] = [
         {
             "name": "Authentication",
-            "description": "User authentication and authorization endpoints"
+            "description": "User authentication and authorization endpoints",
         },
-        {
-            "name": "Chat",
-            "description": "Chat and conversation management endpoints"
-        },
+        {"name": "Chat", "description": "Chat and conversation management endpoints"},
         {
             "name": "Audio",
-            "description": "Audio processing and speech synthesis endpoints"
+            "description": "Audio processing and speech synthesis endpoints",
         },
         {
             "name": "Avatar",
-            "description": "Avatar video generation and management endpoints"
+            "description": "Avatar video generation and management endpoints",
         },
         {
             "name": "Vision",
-            "description": "Image analysis and vision processing endpoints"
+            "description": "Image analysis and vision processing endpoints",
         },
-        {
-            "name": "Users",
-            "description": "User management endpoints"
-        },
-        {
-            "name": "System",
-            "description": "System monitoring and metrics endpoints"
-        }
+        {"name": "Users", "description": "User management endpoints"},
+        {"name": "System", "description": "System monitoring and metrics endpoints"},
     ]
-    
+
     # Add examples
     openapi_schema["components"]["examples"] = {
         "ChatRequest": {
@@ -123,102 +115,102 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
                 "context": {
                     "previous_messages": [
                         {"role": "user", "content": "Hi"},
-                        {"role": "assistant", "content": "Hello! How can I help you?"}
+                        {"role": "assistant", "content": "Hello! How can I help you?"},
                     ]
-                }
+                },
             }
         },
         "ChatResponse": {
             "value": {
                 "text": "I'm doing well, thank you for asking! How can I assist you today?",
                 "audio": "base64-encoded-audio-data",
-                "video": "base64-encoded-video-data"
+                "video": "base64-encoded-video-data",
             }
         },
         "ErrorResponse": {
             "value": {
                 "error": "Invalid input",
                 "detail": "The provided input does not meet the requirements",
-                "code": "INVALID_INPUT"
-            }
-        }
-    }
-    
-    # Add response schemas
-    openapi_schema["components"]["schemas"].update({
-        "Error": {
-            "type": "object",
-            "properties": {
-                "error": {"type": "string"},
-                "detail": {"type": "string"},
-                "code": {"type": "string"}
+                "code": "INVALID_INPUT",
             }
         },
-        "Success": {
-            "type": "object",
-            "properties": {
-                "message": {"type": "string"},
-                "data": {"type": "object"}
-            }
+    }
+
+    # Add response schemas
+    openapi_schema["components"]["schemas"].update(
+        {
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {"type": "string"},
+                    "detail": {"type": "string"},
+                    "code": {"type": "string"},
+                },
+            },
+            "Success": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "data": {"type": "object"},
+                },
+            },
         }
-    })
-    
+    )
+
     # Add WebSocket documentation
     openapi_schema["components"]["schemas"]["WebSocketMessage"] = {
         "type": "object",
         "properties": {
-            "type": {
-                "type": "string",
-                "enum": ["text", "audio", "image", "control"]
-            },
+            "type": {"type": "string", "enum": ["text", "audio", "image", "control"]},
             "data": {
                 "type": "object",
                 "properties": {
                     "text": {"type": "string"},
                     "audio": {"type": "string", "format": "binary"},
                     "image": {"type": "string", "format": "binary"},
-                    "control": {"type": "object"}
-                }
-            }
-        }
+                    "control": {"type": "object"},
+                },
+            },
+        },
     }
-    
+
     # Add rate limit headers
     openapi_schema["components"]["headers"] = {
         "X-RateLimit-Limit": {
             "description": "The maximum number of requests allowed per time window",
-            "schema": {"type": "integer"}
+            "schema": {"type": "integer"},
         },
         "X-RateLimit-Remaining": {
             "description": "The number of requests remaining in the current time window",
-            "schema": {"type": "integer"}
+            "schema": {"type": "integer"},
         },
         "X-RateLimit-Reset": {
             "description": "The time at which the current rate limit window resets",
-            "schema": {"type": "string", "format": "date-time"}
-        }
+            "schema": {"type": "string", "format": "date-time"},
+        },
     }
-    
+
     app.openapi_schema = openapi_schema
     return app.openapi_schema
+
 
 def generate_api_docs(app: FastAPI, output_dir: str = "docs") -> None:
     """Generate API documentation files."""
     # Create output directory
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    
+
     # Generate OpenAPI schema
     openapi_schema = custom_openapi(app)
-    
+
     # Save as JSON
     with open(output_path / "openapi.json", "w") as f:
         json.dump(openapi_schema, f, indent=2)
-    
+
     # Save as YAML
     with open(output_path / "openapi.yaml", "w") as f:
         yaml.dump(openapi_schema, f, sort_keys=False)
-    
+
     # Generate HTML documentation
     html_template = """
     <!DOCTYPE html>
@@ -298,7 +290,7 @@ def generate_api_docs(app: FastAPI, output_dir: str = "docs") -> None:
     </body>
     </html>
     """
-    
+
     # Generate endpoints documentation
     endpoints_html = ""
     for path, path_item in openapi_schema["paths"].items():
@@ -317,16 +309,17 @@ def generate_api_docs(app: FastAPI, output_dir: str = "docs") -> None:
                 </div>
             </div>
             """
-    
+
     # Generate HTML documentation
     html_content = html_template.format(
         version=openapi_schema["info"]["version"],
         description=openapi_schema["info"]["description"],
-        endpoints=endpoints_html
+        endpoints=endpoints_html,
     )
-    
+
     with open(output_path / "index.html", "w") as f:
         f.write(html_content)
+
 
 def _generate_parameters_html(parameters: list) -> str:
     """Generate HTML for parameters documentation."""
@@ -342,6 +335,7 @@ def _generate_parameters_html(parameters: list) -> str:
         """
     return html
 
+
 def _generate_responses_html(responses: dict) -> str:
     """Generate HTML for responses documentation."""
     html = ""
@@ -354,12 +348,13 @@ def _generate_responses_html(responses: dict) -> str:
         """
     return html
 
+
 def _generate_schema_html(schema: dict) -> str:
     """Generate HTML for schema documentation."""
     if not schema:
         return ""
-    
+
     html = "<pre>"
     html += json.dumps(schema, indent=2)
     html += "</pre>"
-    return html 
+    return html

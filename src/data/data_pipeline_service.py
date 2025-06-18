@@ -37,27 +37,20 @@ logger = logging.getLogger(__name__)
 
 # Prometheus metrics
 DATA_PROCESSED = Counter(
-    'data_processed_total',
-    'Total number of data points processed',
-    ['pipeline_stage']
+    "data_processed_total", "Total number of data points processed", ["pipeline_stage"]
 )
 PROCESSING_TIME = Histogram(
-    'data_processing_time_seconds',
-    'Time taken to process data',
-    ['pipeline_stage']
+    "data_processing_time_seconds", "Time taken to process data", ["pipeline_stage"]
 )
-DATA_QUALITY = Gauge(
-    'data_quality_score',
-    'Data quality score',
-    ['quality_metric']
-)
+DATA_QUALITY = Gauge("data_quality_score", "Data quality score", ["quality_metric"])
 
 # SQLAlchemy setup
 Base = declarative_base()
 
+
 class DataPoint(Base):
-    __tablename__ = 'data_points'
-    
+    __tablename__ = "data_points"
+
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     content = Column(String)
@@ -67,18 +60,19 @@ class DataPoint(Base):
     cluster_id = Column(Integer)
     processed = Column(Integer, default=0)
 
+
 class DataPipeline:
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        
+
         # Initialize components
         self._initialize_components()
-        
+
         # Initialize FastAPI app
         self.app = FastAPI()
         self._setup_routes()
-        
+
         # Start pipeline
         self._start_pipeline()
 
@@ -88,77 +82,74 @@ class DataPipeline:
         self.engine = create_engine(self.config["database_url"])
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
-        
+
         # Initialize Kafka
         self.producer = KafkaProducer(
             bootstrap_servers=self.config["kafka_servers"],
-            value_serializer=lambda x: json.dumps(x).encode('utf-8')
+            value_serializer=lambda x: json.dumps(x).encode("utf-8"),
         )
         self.consumer = KafkaConsumer(
             self.config["kafka_topic"],
             bootstrap_servers=self.config["kafka_servers"],
-            value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+            value_deserializer=lambda x: json.loads(x.decode("utf-8")),
         )
-        
+
         # Initialize ML components
         self.quality_classifier = pipeline(
             "text-classification",
             model=self.config["quality_model_path"],
-            device=self.device
+            device=self.device,
         )
         self.embedding_model = SentenceTransformer(
-            self.config["embedding_model_path"],
-            device=self.device
+            self.config["embedding_model_path"], device=self.device
         )
-        
+
         # Initialize preprocessing
         self.scaler = StandardScaler()
         self.pca = PCA(n_components=50)
         self.clusterer = DBSCAN(eps=0.5, min_samples=5)
-        
+
         # Initialize MLflow
         mlflow.set_tracking_uri(self.config["mlflow_tracking_uri"])
         self.mlflow_client = MlflowClient()
 
     def _setup_routes(self):
         """Set up FastAPI routes."""
-        
+
         class DataRequest(BaseModel):
             content: str
             metadata: Dict[str, Any] = Field(default_factory=dict)
-        
+
         @self.app.post("/ingest")
         async def ingest_data(request: DataRequest, background_tasks: BackgroundTasks):
             try:
                 # Process data asynchronously
                 background_tasks.add_task(
-                    self._process_data,
-                    request.content,
-                    request.metadata
+                    self._process_data, request.content, request.metadata
                 )
-                
+
                 return {
                     "status": "processing",
                     "message": "Data ingestion started",
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
                 }
             except Exception as e:
                 logger.error(f"Error ingesting data: {str(e)}")
                 raise HTTPException(status_code=500, detail=str(e))
-        
+
         @self.app.get("/quality/{data_id}")
         async def get_quality(data_id: int):
             try:
                 session = self.Session()
                 data_point = session.query(DataPoint).get(data_id)
-                
+
                 if not data_point:
                     raise HTTPException(status_code=404, detail="Data point not found")
-                
+
                 return {
                     "quality_score": data_point.quality_score,
                     "metadata": data_point.metadata,
-                    "timestamp": data_point.timestamp.isoformat()
+                    "timestamp": data_point.timestamp.isoformat(),
                 }
             except Exception as e:
                 logger.error(f"Error getting quality: {str(e)}")
@@ -169,31 +160,31 @@ class DataPipeline:
     async def _process_data(self, content: str, metadata: Dict[str, Any]):
         """Process data through the pipeline."""
         start_time = time.time()
-        
+
         try:
             # Quality check
             quality_score = self._check_quality(content)
             DATA_QUALITY.labels("overall").set(quality_score)
-            
+
             # Generate embedding
             embedding = self._generate_embedding(content)
-            
+
             # Cluster data
             cluster_id = self._cluster_data(embedding)
-            
+
             # Store data
             self._store_data(content, metadata, quality_score, embedding, cluster_id)
-            
+
             # Publish to Kafka
             self._publish_data(content, metadata, quality_score, embedding, cluster_id)
-            
+
             # Update metrics
             DATA_PROCESSED.labels("processed").inc()
             PROCESSING_TIME.labels("total").observe(time.time() - start_time)
-            
+
             # Log to MLflow
             self._log_to_mlflow(content, metadata, quality_score, embedding, cluster_id)
-            
+
         except Exception as e:
             logger.error(f"Error processing data: {str(e)}")
             raise
@@ -202,16 +193,16 @@ class DataPipeline:
         """Check data quality using multiple metrics."""
         # Check content length
         length_score = min(len(content) / 1000, 1.0)
-        
+
         # Check content diversity
         diversity_score = len(set(content.split())) / len(content.split())
-        
+
         # Check content coherence
         coherence_score = self.quality_classifier(content)[0]["score"]
-        
+
         # Calculate overall quality score
         quality_score = (length_score + diversity_score + coherence_score) / 3
-        
+
         return quality_score
 
     def _generate_embedding(self, content: str) -> List[float]:
@@ -224,16 +215,23 @@ class DataPipeline:
         """Cluster the data using DBSCAN."""
         # Scale embedding
         scaled_embedding = self.scaler.fit_transform([embedding])
-        
+
         # Reduce dimensionality
         reduced_embedding = self.pca.fit_transform(scaled_embedding)
-        
+
         # Cluster
         cluster_id = self.clusterer.fit_predict(reduced_embedding)[0]
-        
+
         return int(cluster_id)
 
-    def _store_data(self, content: str, metadata: Dict[str, Any], quality_score: float, embedding: List[float], cluster_id: int):
+    def _store_data(
+        self,
+        content: str,
+        metadata: Dict[str, Any],
+        quality_score: float,
+        embedding: List[float],
+        cluster_id: int,
+    ):
         """Store data in the database."""
         session = self.Session()
         try:
@@ -242,7 +240,7 @@ class DataPipeline:
                 metadata=metadata,
                 quality_score=quality_score,
                 embedding=embedding,
-                cluster_id=cluster_id
+                cluster_id=cluster_id,
             )
             session.add(data_point)
             session.commit()
@@ -252,7 +250,14 @@ class DataPipeline:
         finally:
             session.close()
 
-    def _publish_data(self, content: str, metadata: Dict[str, Any], quality_score: float, embedding: List[float], cluster_id: int):
+    def _publish_data(
+        self,
+        content: str,
+        metadata: Dict[str, Any],
+        quality_score: float,
+        embedding: List[float],
+        cluster_id: int,
+    ):
         """Publish data to Kafka."""
         try:
             message = {
@@ -261,26 +266,33 @@ class DataPipeline:
                 "quality_score": quality_score,
                 "embedding": embedding,
                 "cluster_id": cluster_id,
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
             self.producer.send(self.config["kafka_topic"], message)
         except KafkaError as e:
             logger.error(f"Error publishing to Kafka: {str(e)}")
             raise
 
-    def _log_to_mlflow(self, content: str, metadata: Dict[str, Any], quality_score: float, embedding: List[float], cluster_id: int):
+    def _log_to_mlflow(
+        self,
+        content: str,
+        metadata: Dict[str, Any],
+        quality_score: float,
+        embedding: List[float],
+        cluster_id: int,
+    ):
         """Log data to MLflow."""
         try:
             metrics = {
                 "quality_score": quality_score,
                 "content_length": len(content),
-                "cluster_id": cluster_id
+                "cluster_id": cluster_id,
             }
-            
+
             self.mlflow_client.log_metrics(
                 run_id=self.config["mlflow_run_id"],
                 metrics=metrics,
-                step=int(time.time())
+                step=int(time.time()),
             )
         except Exception as e:
             logger.error(f"Error logging to MLflow: {str(e)}")
@@ -296,13 +308,11 @@ class DataPipeline:
             try:
                 for message in self.consumer:
                     data = message.value
-                    await self._process_data(
-                        data["content"],
-                        data["metadata"]
-                    )
+                    await self._process_data(data["content"], data["metadata"])
             except Exception as e:
                 logger.error(f"Error processing Kafka message: {str(e)}")
                 await asyncio.sleep(1)
+
 
 def main():
     # Load configuration
@@ -314,25 +324,23 @@ def main():
         "embedding_model_path": "/app/models/embedding_model",
         "mlflow_tracking_uri": "http://localhost:5000",
         "mlflow_run_id": "run_id_1",
-        "deployment_config": {
-            "num_replicas": 2,
-            "max_concurrent_queries": 100
-        }
+        "deployment_config": {"num_replicas": 2, "max_concurrent_queries": 100},
     }
-    
+
     # Initialize pipeline
     pipeline = DataPipeline(config)
-    
+
     # Start Ray Serve
     serve.start(http_options=HTTPOptions(host="0.0.0.0", port=8002))
-    
+
     # Deploy application
     serve.run(
         pipeline.app,
         name="sentient-avatar-pipeline",
         route_prefix="/pipeline",
-        **config["deployment_config"]
+        **config["deployment_config"],
     )
 
+
 if __name__ == "__main__":
-    main() 
+    main()

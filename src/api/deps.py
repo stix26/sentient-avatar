@@ -13,6 +13,7 @@ from src.security import verify_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{constants.API_V1_STR}/auth/login")
 
+
 def get_db() -> Generator:
     try:
         db = SessionLocal()
@@ -20,9 +21,9 @@ def get_db() -> Generator:
     finally:
         db.close()
 
+
 async def get_current_user(
-    db: Session = Depends(get_db),
-    token: str = Depends(oauth2_scheme)
+    db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
 ) -> User:
     try:
         payload = verify_token(token)
@@ -33,29 +34,29 @@ async def get_current_user(
             detail=constants.ERROR_MESSAGES["invalid_token"],
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     user = db.query(User).filter(User.id == token_data.sub).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=constants.ERROR_MESSAGES["user_not_found"]
+            detail=constants.ERROR_MESSAGES["user_not_found"],
         )
     if not user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Inactive user"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )
     return user
+
 
 async def get_current_active_user(
     current_user: User = Depends(get_current_user),
 ) -> User:
     if not current_user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Inactive user"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )
     return current_user
+
 
 async def get_current_active_superuser(
     current_user: User = Depends(get_current_user),
@@ -63,14 +64,14 @@ async def get_current_active_superuser(
     if not current_user.is_superuser:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=constants.ERROR_MESSAGES["permission_denied"]
+            detail=constants.ERROR_MESSAGES["permission_denied"],
         )
     return current_user
 
+
 def get_pagination_params(
-    skip: Optional[int] = 0,
-    limit: Optional[int] = constants.DEFAULT_PAGE_SIZE
+    skip: Optional[int] = 0, limit: Optional[int] = constants.DEFAULT_PAGE_SIZE
 ) -> dict:
     if limit > constants.MAX_PAGE_SIZE:
         limit = constants.MAX_PAGE_SIZE
-    return {"skip": skip, "limit": limit} 
+    return {"skip": skip, "limit": limit}
