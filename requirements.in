@@ -4,8 +4,8 @@ uvicorn>=0.29.0
 python-multipart>=0.0.18
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
-pydantic==2.7.4
-pydantic-settings==2.9.1
+pydantic>=2.7.4
+pydantic-settings>=2.9.1
 email-validator==2.1.0.post1
 
 # Database
@@ -68,8 +68,8 @@ setuptools>=68.0
 # AI Agents and Language Models
 crewai>=0.5.0
 autogen==0.9.2
-langchain==0.3.25
-langchain-community==0.3.25
+langchain>=0.3.25
+langchain-community>=0.3.25
 langchain-experimental==0.3.4
 
 # Security and monitoring
