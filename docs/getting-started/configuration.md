@@ -31,7 +31,7 @@ REFRESH_TOKEN_EXPIRE_DAYS=7
 
 #### Database
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/sentient_avatar
+DATABASE_URL=postgresql://user:password@postgres:5432/sentient_avatar
 DATABASE_POOL_SIZE=5
 DATABASE_MAX_OVERFLOW=10
 ```

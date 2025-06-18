@@ -307,7 +307,7 @@ class DataPipeline:
 def main():
     # Load configuration
     config = {
-        "database_url": "postgresql://user:password@localhost:5432/sentient_avatar",
+        "database_url": "postgresql://user:password@postgres:5432/sentient_avatar",
         "kafka_servers": ["localhost:9092"],
         "kafka_topic": "sentient-avatar-data",
         "quality_model_path": "/app/models/quality_classifier",
