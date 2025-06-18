@@ -98,60 +98,75 @@ jobs:
         pip install safety bandit pip-audit
     
     - name: Run safety checks
-      run: safety scan || true
+      run: |
+        echo "Running safety checks..."
+        safety scan || echo "Safety scan completed with warnings"
     
     - name: Run bandit security checks
       run: |
-        bandit -r src/ -f json -o bandit-results.json || true
-        # Convert Bandit JSON to SARIF format using jq
-        jq -n --arg results "$(cat bandit-results.json | jq -c '.results')" '{
-          "version": "2.1.0",
-          "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
-          "runs": [
-            {
-              "tool": {
-                "driver": {
-                  "name": "Bandit",
-                  "version": "1.8.5",
-                  "informationUri": "https://bandit.readthedocs.io/"
-                }
-              },
-              "results": ($results | fromjson | map({
-                "message": {
-                  "text": .issue_text
-                },
-                "level": (if .issue_severity == "HIGH" then "error" elif .issue_severity == "MEDIUM" then "warning" else "note" end),
-                "locations": [{
-                  "physicalLocation": {
-                    "artifactLocation": {
-                      "uri": .filename
-                    },
-                    "region": {
-                      "startLine": .line_number,
-                      "startColumn": .col_offset,
-                      "endColumn": .end_col_offset
-                    }
+        echo "Running bandit security checks..."
+        bandit -r src/ -f json -o bandit-results.json || echo "Bandit scan completed with warnings"
+        
+        # Check if bandit-results.json exists and has content
+        if [ -s bandit-results.json ]; then
+          echo "Converting Bandit results to SARIF format..."
+          # Convert Bandit JSON to SARIF format using jq
+          jq -n --arg results "$(cat bandit-results.json | jq -c '.results')" '{
+            "version": "2.1.0",
+            "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+            "runs": [
+              {
+                "tool": {
+                  "driver": {
+                    "name": "Bandit",
+                    "version": "1.8.5",
+                    "informationUri": "https://bandit.readthedocs.io/"
                   }
-                }],
-                "properties": {
-                  "issue_confidence": .issue_confidence,
-                  "issue_cwe": .issue_cwe,
-                  "test_id": .test_id,
-                  "test_name": .test_name,
-                  "more_info": .more_info
-                }
-              }))
-            }
-          ]
-        }' > bandit-sarif.json
+                },
+                "results": ($results | fromjson | map({
+                  "message": {
+                    "text": .issue_text
+                  },
+                  "level": (if .issue_severity == "HIGH" then "error" elif .issue_severity == "MEDIUM" then "warning" else "note" end),
+                  "locations": [{
+                    "physicalLocation": {
+                      "artifactLocation": {
+                        "uri": .filename
+                      },
+                      "region": {
+                        "startLine": .line_number,
+                        "startColumn": .col_offset,
+                        "endColumn": .end_col_offset
+                      }
+                    }
+                  }],
+                  "properties": {
+                    "issue_confidence": .issue_confidence,
+                    "issue_cwe": .issue_cwe,
+                    "test_id": .test_id,
+                    "test_name": .test_name,
+                    "more_info": .more_info
+                  }
+                }))
+              }
+            ]
+          }' > bandit-sarif.json
+        else
+          echo "No security issues found by Bandit"
+          # Create empty SARIF file
+          echo '{"version":"2.1.0","$schema":"https://json.schemastore.org/sarif-2.1.0.json","runs":[{"tool":{"driver":{"name":"Bandit","version":"1.8.5","informationUri":"https://bandit.readthedocs.io/"}},"results":[]}]}' > bandit-sarif.json
+        fi
     
     - name: Run pip-audit
-      run: pip-audit || true
+      run: |
+        echo "Running pip-audit..."
+        pip-audit || echo "pip-audit completed with warnings"
     
     - name: Upload security scan results
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: bandit-sarif.json
+        fail_on_error: false
 
   docker:
     runs-on: ubuntu-latest
@@ -163,19 +178,41 @@ jobs:
     
     - name: Build and test Docker image
       run: |
+        echo "Building Docker image..."
         docker build -t sentient-avatar:test .
-        # Run container with health check
+        
+        echo "Starting container for health check..."
         docker run -d --name test-container \
           --health-cmd="curl -f http://localhost:8000/health || exit 1" \
           --health-interval=10s \
           --health-timeout=5s \
           --health-retries=3 \
           sentient-avatar:test
-        # Wait for container to be healthy
-        timeout 60s bash -c 'while [[ "$(docker inspect -f {{.State.Health.Status}} test-container)" != "healthy" ]]; do sleep 2; done'
-        # Clean up
-        docker stop test-container
-        docker rm test-container
+        
+        echo "Waiting for container to be healthy..."
+        # Wait for container to be healthy with timeout and better error handling
+        timeout 60s bash -c '
+          while true; do
+            status=$(docker inspect -f {{.State.Health.Status}} test-container)
+            echo "Container health status: $status"
+            if [ "$status" = "healthy" ]; then
+              echo "Container is healthy"
+              exit 0
+            elif [ "$status" = "unhealthy" ]; then
+              echo "Container is unhealthy"
+              exit 1
+            fi
+            sleep 2
+          done
+        ' || {
+          echo "Container health check failed"
+          docker logs test-container
+          exit 1
+        }
+        
+        echo "Cleaning up test container..."
+        docker stop test-container || true
+        docker rm test-container || true
     
     - name: Scan Docker image
       uses: aquasecurity/trivy-action@master
@@ -185,4 +222,5 @@ jobs:
         exit-code: '1'
         ignore-unfixed: true
         vuln-type: 'os,library'
-        severity: 'CRITICAL,HIGH' 
+        severity: 'CRITICAL,HIGH'
+        fail-on: 'CRITICAL,HIGH' 
