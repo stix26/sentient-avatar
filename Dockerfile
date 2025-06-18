@@ -21,9 +21,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies in stages
 COPY requirements.txt .
 
-# Install dependencies in two stages to handle conflicts
+# Install dependencies in stages to handle conflicts
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt --no-deps && \
+    # Install base dependencies first
+    pip install --no-cache-dir setuptools wheel && \
+    # Install core dependencies
+    pip install --no-cache-dir fastapi uvicorn sqlalchemy psycopg2-binary redis && \
+    # Install AI/ML dependencies
+    pip install --no-cache-dir transformers torch && \
+    # Install remaining dependencies
     pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
