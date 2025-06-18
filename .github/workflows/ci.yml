@@ -56,17 +56,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # Install base dependencies first
-        pip install setuptools wheel
-        # Install transformers with its required tokenizers version
-        pip install "tokenizers>=0.14,<0.19"
-        pip install transformers==4.37.2
-        # Install core dependencies
-        pip install fastapi uvicorn sqlalchemy psycopg2-binary redis
-        # Install remaining dependencies
         pip install -r requirements.txt
-        # Install crewai with compatible tokenizers
-        pip install --no-deps crewai==0.130.0
     
     - name: Run linting
       run: |
@@ -104,13 +94,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # Install base dependencies first
-        pip install setuptools wheel
-        # Install security tools
+        pip install -r requirements.txt
         pip install safety bandit pip-audit
     
     - name: Run safety checks
-      run: safety check || true
+      run: safety scan || true
     
     - name: Run bandit security checks
       run: |
@@ -124,7 +112,7 @@ jobs:
               "tool": {
                 "driver": {
                   "name": "Bandit",
-                  "version": "1.7.5",
+                  "version": "1.8.5",
                   "informationUri": "https://bandit.readthedocs.io/"
                 }
               },
@@ -176,8 +164,18 @@ jobs:
     - name: Build and test Docker image
       run: |
         docker build -t sentient-avatar:test .
-        docker run -d --name test-container sentient-avatar:test
-        docker ps | grep test-container
+        # Run container with health check
+        docker run -d --name test-container \
+          --health-cmd="curl -f http://localhost:8000/health || exit 1" \
+          --health-interval=10s \
+          --health-timeout=5s \
+          --health-retries=3 \
+          sentient-avatar:test
+        # Wait for container to be healthy
+        timeout 60s bash -c 'while [[ "$(docker inspect -f {{.State.Health.Status}} test-container)" != "healthy" ]]; do sleep 2; done'
+        # Clean up
+        docker stop test-container
+        docker rm test-container
     
     - name: Scan Docker image
       uses: aquasecurity/trivy-action@master

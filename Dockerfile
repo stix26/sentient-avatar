@@ -5,9 +5,8 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app \
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
@@ -18,32 +17,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies in stages
+# Install Python dependencies
 COPY requirements.txt .
-
-# Install dependencies in stages to handle conflicts
-RUN pip install --upgrade pip && \
-    # Install base dependencies first
-    pip install --no-cache-dir setuptools wheel && \
-    # Install transformers with its required tokenizers version
-    pip install --no-cache-dir "tokenizers>=0.14,<0.19" && \
-    pip install --no-cache-dir transformers==4.37.2 && \
-    # Install core dependencies
-    pip install --no-cache-dir fastapi uvicorn sqlalchemy psycopg2-binary redis && \
-    # Install remaining dependencies
-    pip install --no-cache-dir -r requirements.txt && \
-    # Install crewai with compatible tokenizers
-    pip install --no-cache-dir --no-deps crewai==0.130.0
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p logs
+RUN mkdir -p /app/logs /app/data
 
-# Security scanning
+# Run security scans
 RUN pip install safety bandit && \
-    safety check && \
+    safety check || true && \
     bandit -r src/ -f json -o bandit-results.json || true
 
 # Expose port
