@@ -1341,7 +1341,7 @@ class AvatarRenderer:
                 "desire_level": self._calculate_desire_level(context),
                 "relationship_potential": self._evaluate_relationship_potential(context),
                 "growth_opportunities": self._identify_growth_opportunities(context)
-            })
+            }
 
     def _update_aesthetic_sensibility(self, context: Dict[str, Any]) -> None:
         """Update the avatar's aesthetic experiences and understanding."""
