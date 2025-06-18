@@ -3,14 +3,14 @@ import asyncio
 import time
 from src.models.avatar import Avatar
 
+
 class StreamingService:
     def __init__(self):
         self.update_interval = 0.1  # 100ms between updates
         self.max_duration = 3600  # 1 hour maximum streaming duration
 
     async def stream_avatar_updates(
-        self,
-        avatar: Avatar
+        self, avatar: Avatar
     ) -> AsyncGenerator[Dict[str, Any], None]:
         """
         Stream real-time updates for an avatar.
@@ -31,11 +31,7 @@ class StreamingService:
             # Small delay to prevent CPU overuse
             await asyncio.sleep(0.01)
 
-    def _generate_update(
-        self,
-        avatar: Avatar,
-        elapsed_time: float
-    ) -> Dict[str, Any]:
+    def _generate_update(self, avatar: Avatar, elapsed_time: float) -> Dict[str, Any]:
         """
         Generate a real-time update for the avatar.
         """
@@ -44,16 +40,20 @@ class StreamingService:
             "timestamp": time.time(),
             "elapsed_time": elapsed_time,
             "avatar_id": avatar.id,
-            "name": avatar.name
+            "name": avatar.name,
         }
 
         # Add current states if available
         if avatar.current_emotion:
             update["emotion"] = self._process_emotion_state(avatar.current_emotion)
         if avatar.current_cognitive_state:
-            update["cognitive"] = self._process_cognitive_state(avatar.current_cognitive_state)
+            update["cognitive"] = self._process_cognitive_state(
+                avatar.current_cognitive_state
+            )
         if avatar.current_physical_state:
-            update["physical"] = self._process_physical_state(avatar.current_physical_state)
+            update["physical"] = self._process_physical_state(
+                avatar.current_physical_state
+            )
 
         # Add micro-expressions and subtle movements
         update["micro_expressions"] = self._generate_micro_expressions(avatar)
@@ -74,10 +74,12 @@ class StreamingService:
             "movement_speed": emotion_state.get("movement_speed", 1.0),
             "gesture_frequency": emotion_state.get("gesture_frequency", 1.0),
             "voice_volume": emotion_state.get("voice_volume", 1.0),
-            "reaction_time": emotion_state.get("reaction_time", 1.0)
+            "reaction_time": emotion_state.get("reaction_time", 1.0),
         }
 
-    def _process_cognitive_state(self, cognitive_state: Dict[str, Any]) -> Dict[str, Any]:
+    def _process_cognitive_state(
+        self, cognitive_state: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Process and enhance cognitive state for streaming.
         """
@@ -89,7 +91,7 @@ class StreamingService:
             "voice_characteristics": cognitive_state["voice_characteristics"],
             "focus_level": cognitive_state.get("focus_level", 0.7),
             "processing_speed": cognitive_state.get("processing_speed", 1.0),
-            "attention_span": cognitive_state.get("attention_span", 1.0)
+            "attention_span": cognitive_state.get("attention_span", 1.0),
         }
 
     def _process_physical_state(self, physical_state: Dict[str, Any]) -> Dict[str, Any]:
@@ -107,7 +109,7 @@ class StreamingService:
             "movement_quality": physical_state.get("movement_quality", 1.0),
             "breathing_rate": physical_state.get("breathing_rate", 12.0),
             "balance": physical_state.get("balance", 1.0),
-            "coordination": physical_state.get("coordination", 1.0)
+            "coordination": physical_state.get("coordination", 1.0),
         }
 
     def _generate_micro_expressions(self, avatar: Avatar) -> Dict[str, Any]:
@@ -117,7 +119,7 @@ class StreamingService:
         micro_expressions = {
             "eye_movements": [],
             "facial_muscles": [],
-            "breathing_pattern": "normal"
+            "breathing_pattern": "normal",
         }
 
         # Add eye movements
@@ -134,9 +136,13 @@ class StreamingService:
         if avatar.current_cognitive_state:
             operation = avatar.current_cognitive_state["operation"]
             if operation in ["thinking", "analyzing"]:
-                micro_expressions["facial_muscles"].extend(["subtle_frown", "brow_furrow"])
+                micro_expressions["facial_muscles"].extend(
+                    ["subtle_frown", "brow_furrow"]
+                )
             elif operation in ["learning", "remembering"]:
-                micro_expressions["facial_muscles"].extend(["slight_smile", "raised_brows"])
+                micro_expressions["facial_muscles"].extend(
+                    ["slight_smile", "raised_brows"]
+                )
 
         return micro_expressions
 
@@ -147,23 +153,31 @@ class StreamingService:
         subtle_movements = {
             "posture_adjustments": [],
             "weight_shifts": [],
-            "breathing_movements": "normal"
+            "breathing_movements": "normal",
         }
 
         # Add posture adjustments
         if avatar.current_physical_state:
             action = avatar.current_physical_state["action"]
             if action in ["walking", "running"]:
-                subtle_movements["posture_adjustments"].extend(["slight_lean", "rhythmic_sway"])
+                subtle_movements["posture_adjustments"].extend(
+                    ["slight_lean", "rhythmic_sway"]
+                )
             elif action in ["idle", "thinking"]:
-                subtle_movements["posture_adjustments"].extend(["micro_shifts", "comfort_adjustments"])
+                subtle_movements["posture_adjustments"].extend(
+                    ["micro_shifts", "comfort_adjustments"]
+                )
 
         # Add weight shifts
         if avatar.current_emotion:
             emotion = avatar.current_emotion["emotion"]
             if emotion in ["nervous", "anxious"]:
-                subtle_movements["weight_shifts"].extend(["slight_rocking", "weight_transfer"])
+                subtle_movements["weight_shifts"].extend(
+                    ["slight_rocking", "weight_transfer"]
+                )
             elif emotion in ["confident", "excited"]:
-                subtle_movements["weight_shifts"].extend(["forward_lean", "energetic_shift"])
+                subtle_movements["weight_shifts"].extend(
+                    ["forward_lean", "energetic_shift"]
+                )
 
-        return subtle_movements 
+        return subtle_movements

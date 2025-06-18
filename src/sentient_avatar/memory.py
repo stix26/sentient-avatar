@@ -4,6 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class Memory:
     """Lightweight memory wrapper around a vector store service for testing."""
 

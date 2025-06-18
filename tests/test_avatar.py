@@ -1,6 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
+
 def test_avatar_creation(client: TestClient):
     response = client.post(
         "/api/v1/avatar",
@@ -10,8 +11,8 @@ def test_avatar_creation(client: TestClient):
             "hair_style": "long_straight",
             "hair_color": "black",
             "eye_color": "brown",
-            "skin_tone": "fair"
-        }
+            "skin_tone": "fair",
+        },
     )
     assert response.status_code == 200
     data = response.json()
@@ -21,6 +22,7 @@ def test_avatar_creation(client: TestClient):
     assert data["hair_color"] == "black"
     assert data["eye_color"] == "brown"
     assert data["skin_tone"] == "fair"
+
 
 def test_avatar_update(client: TestClient):
     # First create an avatar
@@ -32,18 +34,15 @@ def test_avatar_update(client: TestClient):
             "hair_style": "long_straight",
             "hair_color": "black",
             "eye_color": "brown",
-            "skin_tone": "fair"
-        }
+            "skin_tone": "fair",
+        },
     )
     avatar_id = create_response.json()["id"]
 
     # Then update it
     update_response = client.put(
         f"/api/v1/avatar/{avatar_id}",
-        json={
-            "hair_style": "short_curly",
-            "hair_color": "blonde"
-        }
+        json={"hair_style": "short_curly", "hair_color": "blonde"},
     )
     assert update_response.status_code == 200
     data = update_response.json()
@@ -51,6 +50,7 @@ def test_avatar_update(client: TestClient):
     assert data["hair_color"] == "blonde"
     assert data["eye_color"] == "brown"  # Unchanged
     assert data["skin_tone"] == "fair"  # Unchanged
+
 
 def test_avatar_emotions(client: TestClient):
     # Create an avatar
@@ -62,23 +62,21 @@ def test_avatar_emotions(client: TestClient):
             "hair_style": "long_straight",
             "hair_color": "black",
             "eye_color": "brown",
-            "skin_tone": "fair"
-        }
+            "skin_tone": "fair",
+        },
     )
     avatar_id = create_response.json()["id"]
 
     # Test emotional response
     emotion_response = client.post(
         f"/api/v1/avatar/{avatar_id}/emotion",
-        json={
-            "emotion": "happy",
-            "intensity": 0.8
-        }
+        json={"emotion": "happy", "intensity": 0.8},
     )
     assert emotion_response.status_code == 200
     data = emotion_response.json()
     assert data["current_emotion"] == "happy"
     assert data["emotion_intensity"] == 0.8
+
 
 def test_avatar_cognitive(client: TestClient):
     # Create an avatar
@@ -90,24 +88,22 @@ def test_avatar_cognitive(client: TestClient):
             "hair_style": "long_straight",
             "hair_color": "black",
             "eye_color": "brown",
-            "skin_tone": "fair"
-        }
+            "skin_tone": "fair",
+        },
     )
     avatar_id = create_response.json()["id"]
 
     # Test cognitive response
     cognitive_response = client.post(
         f"/api/v1/avatar/{avatar_id}/cognitive",
-        json={
-            "thought": "What is the meaning of life?",
-            "context": "philosophical"
-        }
+        json={"thought": "What is the meaning of life?", "context": "philosophical"},
     )
     assert cognitive_response.status_code == 200
     data = cognitive_response.json()
     assert "response" in data
     assert "thought_process" in data
     assert "emotional_impact" in data
+
 
 def test_avatar_physical(client: TestClient):
     # Create an avatar
@@ -119,18 +115,15 @@ def test_avatar_physical(client: TestClient):
             "hair_style": "long_straight",
             "hair_color": "black",
             "eye_color": "brown",
-            "skin_tone": "fair"
-        }
+            "skin_tone": "fair",
+        },
     )
     avatar_id = create_response.json()["id"]
 
     # Test physical response
     physical_response = client.post(
         f"/api/v1/avatar/{avatar_id}/physical",
-        json={
-            "action": "wave",
-            "intensity": 0.7
-        }
+        json={"action": "wave", "intensity": 0.7},
     )
     assert physical_response.status_code == 200
     data = physical_response.json()
@@ -138,6 +131,7 @@ def test_avatar_physical(client: TestClient):
     assert data["intensity"] == 0.7
     assert "animation_data" in data
     assert "physical_state" in data
+
 
 @pytest.mark.asyncio
 async def test_avatar_streaming(client: TestClient):
@@ -150,8 +144,8 @@ async def test_avatar_streaming(client: TestClient):
             "hair_style": "long_straight",
             "hair_color": "black",
             "eye_color": "brown",
-            "skin_tone": "fair"
-        }
+            "skin_tone": "fair",
+        },
     )
     avatar_id = create_response.json()["id"]
 
@@ -163,4 +157,4 @@ async def test_avatar_streaming(client: TestClient):
                 data = response.json()
                 assert "frame" in data
                 assert "audio" in data
-                assert "state" in data 
+                assert "state" in data

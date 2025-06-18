@@ -21,6 +21,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Create Base class
 Base = declarative_base()
 
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -29,10 +30,12 @@ def get_db():
     finally:
         db.close()
 
+
 # Database initialization
 def init_db():
     Base.metadata.create_all(bind=engine)
 
+
 # Database cleanup
 def cleanup_db():
-    Base.metadata.drop_all(bind=engine) 
+    Base.metadata.drop_all(bind=engine)

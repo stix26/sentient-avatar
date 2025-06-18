@@ -17,6 +17,7 @@ REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 DEFAULT_PAGE_SIZE: int = 20
 MAX_PAGE_SIZE: int = 100
 
+
 # Avatar Constants
 class EmotionType(str, Enum):
     HAPPY = "happy"
@@ -28,6 +29,7 @@ class EmotionType(str, Enum):
     CALM = "calm"
     SURPRISED = "surprised"
 
+
 class CognitiveState(str, Enum):
     FOCUSED = "focused"
     DISTRACTED = "distracted"
@@ -36,6 +38,7 @@ class CognitiveState(str, Enum):
     RELAXED = "relaxed"
     STRESSED = "stressed"
 
+
 class PhysicalState(str, Enum):
     ACTIVE = "active"
     RESTING = "resting"
@@ -43,6 +46,7 @@ class PhysicalState(str, Enum):
     RELAXED = "relaxed"
     ENERGETIC = "energetic"
     FATIGUED = "fatigued"
+
 
 # Streaming Constants
 STREAM_UPDATE_INTERVAL: float = 0.1  # seconds
@@ -70,7 +74,7 @@ ERROR_MESSAGES: Dict[str, str] = {
     "invalid_token": "Invalid or expired token",
     "rate_limit_exceeded": "Rate limit exceeded",
     "validation_error": "Validation error",
-    "internal_error": "Internal server error"
+    "internal_error": "Internal server error",
 }
 
 # Success Messages
@@ -82,9 +86,9 @@ SUCCESS_MESSAGES: Dict[str, str] = {
     "avatar_updated": "Avatar updated successfully",
     "avatar_deleted": "Avatar deleted successfully",
     "login_successful": "Login successful",
-    "logout_successful": "Logout successful"
+    "logout_successful": "Logout successful",
 }
 
 # File Upload
 ALLOWED_EXTENSIONS: List[str] = ["jpg", "jpeg", "png", "gif"]
-MAX_FILE_SIZE: int = 5 * 1024 * 1024  # 5MB 
+MAX_FILE_SIZE: int = 5 * 1024 * 1024  # 5MB
