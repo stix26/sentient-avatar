@@ -121,7 +121,14 @@ class ModelEvaluator:
         total = 0
 
         for example in dataset["test"]:
-            prompt = f"Question: {example['question']}\nA) {example['A']}\nB) {example['B']}\nC) {example['C']}\nD) {example['D']}\nAnswer:"
+            prompt = (
+                f"Question: {example['question']}\n"
+                f"A) {example['A']}\n"
+                f"B) {example['B']}\n"
+                f"C) {example['C']}\n"
+                f"D) {example['D']}\n"
+                "Answer:"
+            )
             response = self.generator(prompt, max_length=50)[0]["generated_text"]
 
             # Extract answer
@@ -138,7 +145,14 @@ class ModelEvaluator:
         total = 0
 
         for example in dataset["validation"]:
-            prompt = f"Context: {example['ctx']}\nA) {example['endings'][0]}\nB) {example['endings'][1]}\nC) {example['endings'][2]}\nD) {example['endings'][3]}\nAnswer:"
+            prompt = (
+                f"Context: {example['ctx']}\n"
+                f"A) {example['endings'][0]}\n"
+                f"B) {example['endings'][1]}\n"
+                f"C) {example['endings'][2]}\n"
+                f"D) {example['endings'][3]}\n"
+                "Answer:"
+            )
             response = self.generator(prompt, max_length=50)[0]["generated_text"]
 
             # Extract answer
@@ -179,7 +193,7 @@ class ModelEvaluator:
                 answer = float(response.split("Answer:")[-1].strip())
                 if abs(answer - example["answer"]) < 0.01:
                     correct += 1
-            except:
+            except Exception:
                 pass
             total += 1
 

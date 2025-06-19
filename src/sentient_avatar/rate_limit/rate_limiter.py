@@ -226,7 +226,8 @@ class RateLimiter:
 
                 if is_limited:
                     raise Exception(
-                        f"Rate limit exceeded. Try again in {info['retry_after']} seconds."
+                        "Rate limit exceeded. Try again in "
+                        f"{info['retry_after']} seconds."
                     )
 
                 return await func(*args, **kwargs)

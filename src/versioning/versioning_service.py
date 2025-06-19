@@ -196,20 +196,6 @@ class ModelVersioningService:
             "statistical_significance": {},
         }
 
-        # Calculate success rates
-        success_rate_a = (
-            experiment.results["model_a"]["successes"]
-            / experiment.results["model_a"]["requests"]
-            if experiment.results["model_a"]["requests"] > 0
-            else 0
-        )
-        success_rate_b = (
-            experiment.results["model_b"]["successes"]
-            / experiment.results["model_b"]["requests"]
-            if experiment.results["model_b"]["requests"] > 0
-            else 0
-        )
-
         # Perform statistical test
         if (
             experiment.results["model_a"]["requests"] > 0

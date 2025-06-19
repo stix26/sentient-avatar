@@ -1069,9 +1069,7 @@ class AvatarRenderer:
             # Update cognitive state if cognitive stimulus is provided
             if cognitive_stimulus:
                 # Update existential awareness
-                existential_state = self.cognitive_state.update_existential_state(
-                    cognitive_stimulus
-                )
+                self.cognitive_state.update_existential_state(cognitive_stimulus)
 
                 # Explore faith and beliefs
                 self.cognitive_state.explore_faith(cognitive_stimulus)
@@ -1496,7 +1494,7 @@ class AvatarRenderer:
                 }
             )
 
-    def _update_body_state(self, context: Dict[str, Any]) -> None:
+    def _update_body_state_detailed(self, context: Dict[str, Any]) -> None:
         """Update the avatar's body state with ultra-realistic details."""
         if context.get("body_movement"):
             self.body_state.update(

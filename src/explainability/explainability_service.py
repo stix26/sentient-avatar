@@ -19,6 +19,7 @@ from pydantic import BaseModel
 from ray import serve
 from ray.serve.config import HTTPOptions
 from transformers import AutoModelForCausalLM
+from captum.attr import IntegratedGradients
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

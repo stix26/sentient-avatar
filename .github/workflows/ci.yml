@@ -199,17 +199,34 @@ jobs:
       run: |
         echo "Building Docker image..."
         docker build -t sentient-avatar:test .
-        
-        echo "Starting container for health check..."
+
+        echo "Creating test network..."
+        docker network create test-network
+
+        echo "Starting PostgreSQL container..."
+        docker run -d --name test-postgres \
+          --network=test-network \
+          --network-alias postgres \
+          -e POSTGRES_USER=postgres \
+          -e POSTGRES_PASSWORD=postgres \
+          -e POSTGRES_DB=test_db \
+          --health-cmd="pg_isready -U postgres" \
+          --health-interval=10s \
+          --health-timeout=5s \
+          --health-retries=5 \
+          postgres:13
+
+        echo "Starting application container..."
         docker run -d --name test-container \
+          --network=test-network \
           --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1" \
           --health-interval=10s \
           --health-timeout=5s \
           --health-retries=3 \
+          -e DATABASE_URL=postgres://postgres:postgres@postgres:5432/test_db \
           sentient-avatar:test
-        
+
         echo "Waiting for container to be healthy..."
-        # Wait for container to be healthy with timeout and better error handling
         timeout 60s bash -c '
           while true; do
             status=$(docker inspect -f {{.State.Health.Status}} test-container)
@@ -228,10 +245,11 @@ jobs:
           docker logs test-container
           exit 1
         }
-        
-        echo "Cleaning up test container..."
-        docker stop test-container || true
-        docker rm test-container || true
+
+        echo "Cleaning up containers and network..."
+        docker stop test-container test-postgres || true
+        docker rm test-container test-postgres || true
+        docker network rm test-network || true
     
     - name: Scan Docker image
       uses: aquasecurity/trivy-action@master

@@ -195,7 +195,10 @@ class GrafanaDashboard:
                         "datasource": "Prometheus",
                         "targets": [
                             {
-                                "expr": "rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m])",
+                                "expr": (
+                                    "rate(http_request_duration_seconds_sum[5m]) / "
+                                    "rate(http_request_duration_seconds_count[5m])"
+                                ),
                                 "legendFormat": "{{method}} {{path}}",
                             }
                         ],
@@ -280,14 +283,20 @@ class GrafanaDashboard:
 
         self.create_alert_rule(
             name="High Memory Usage",
-            condition="process_resident_memory_bytes / node_memory_MemTotal_bytes > 0.9",
+            condition=(
+                "process_resident_memory_bytes / "
+                "node_memory_MemTotal_bytes > 0.9"
+            ),
             duration="5m",
             severity="warning",
         )
 
         self.create_alert_rule(
             name="High Disk Usage",
-            condition="node_filesystem_avail_bytes / node_filesystem_size_bytes < 0.1",
+            condition=(
+                "node_filesystem_avail_bytes / "
+                "node_filesystem_size_bytes < 0.1"
+            ),
             duration="5m",
             severity="warning",
         )
@@ -302,14 +311,20 @@ class GrafanaDashboard:
 
         self.create_alert_rule(
             name="High Error Rate",
-            condition='rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05',
+            condition=(
+                'rate(http_requests_total{status=~"5.."}[5m]) / '
+                'rate(http_requests_total[5m]) > 0.05'
+            ),
             duration="5m",
             severity="warning",
         )
 
         self.create_alert_rule(
             name="High Response Time",
-            condition="rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]) > 1",
+            condition=(
+                "rate(http_request_duration_seconds_sum[5m]) / "
+                "rate(http_request_duration_seconds_count[5m]) > 1"
+            ),
             duration="5m",
             severity="warning",
         )
