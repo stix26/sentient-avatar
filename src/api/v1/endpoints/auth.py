@@ -1,14 +1,12 @@
-from datetime import timedelta
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from src.config import settings
 from src.database import get_db
 from src.models.user import User
-from src.schemas.user import Token, TokenPayload, UserCreate, UserResponse
+from src.schemas.user import Token, UserCreate, UserResponse
 from src.security import (
     create_access_token,
     create_refresh_token,

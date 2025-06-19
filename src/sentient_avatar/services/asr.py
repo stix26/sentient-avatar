@@ -26,7 +26,6 @@ class ASRService(BaseService):
 
     async def cleanup(self) -> None:
         """Cleanup ASR service resources"""
-        pass
 
     async def transcribe(
         self,

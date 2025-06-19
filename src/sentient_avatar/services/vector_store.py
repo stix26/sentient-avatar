@@ -1,6 +1,4 @@
-import json
 import logging
-from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
 from .base import BaseService
@@ -39,7 +37,6 @@ class VectorStoreService(BaseService):
 
     async def cleanup(self) -> None:
         """Cleanup Vector Store service resources"""
-        pass
 
     async def create_collection(
         self, vector_size: int = 1536, distance: str = "Cosine"

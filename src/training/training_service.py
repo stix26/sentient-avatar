@@ -2,22 +2,15 @@ import argparse
 import logging
 import os
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict
 
 import mlflow
-import numpy as np
 import optuna
 import ray
-import torch
 import wandb
 from accelerate import Accelerator
 from datasets import load_dataset
-from deepspeed.ops.adam import DeepSpeedCPUAdam
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from ray import tune
-from ray.tune.integration.wandb import WandbLoggerCallback
-from ray.tune.schedulers import ASHAScheduler
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -198,7 +191,7 @@ class DistributedTrainingService:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, required=True)
-    args = parser.parse_args()
+    parser.parse_args()
 
     # Load configuration
     config = {

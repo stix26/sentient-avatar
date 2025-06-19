@@ -1,11 +1,7 @@
-import asyncio
 import base64
 import json
 import logging
-import os
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from fastapi import (
     Depends,
@@ -15,23 +11,14 @@ from fastapi import (
     HTTPException,
     UploadFile,
     WebSocket,
-    WebSocketDisconnect,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
 
 from .cache.redis_cache import RedisCache
-from .config.config import Config, load_config
-from .logging.logger import get_logger
+from .config.config import load_config
 from .monitoring.metrics import MetricsCollector
 from .rate_limit.rate_limiter import RateLimiter
-from .services.asr import ASRService
-from .services.avatar import AvatarService
 from .services.factory import ServiceFactory
-from .services.llm import LLMService
-from .services.tts import TTSService
-from .services.vector_store import VectorStoreService
-from .services.vision import VisionService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -81,7 +68,7 @@ async def startup():
 
     try:
         # Load configuration
-        config = load_config()
+        load_config()
 
         # Create service factory
         service_factory = ServiceFactory.create()

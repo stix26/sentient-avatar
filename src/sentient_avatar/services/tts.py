@@ -1,6 +1,6 @@
 import base64
 import logging
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Tuple
 
 from .base import BaseService
 
@@ -26,7 +26,6 @@ class TTSService(BaseService):
 
     async def cleanup(self) -> None:
         """Cleanup TTS service resources"""
-        pass
 
     async def synthesize(
         self,

@@ -1,9 +1,8 @@
 import asyncio
 import logging
 import time
-from datetime import datetime
 from functools import wraps
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, Optional
 
 import psutil
 from prometheus_client import Counter, Gauge, Histogram, Summary
@@ -210,7 +209,7 @@ class MetricsCollector:
                         method, endpoint, status, time.time() - start_time
                     )
                     return response
-                except Exception as e:
+                except Exception:
                     self.track_request(method, endpoint, 500, time.time() - start_time)
                     raise
 
@@ -239,7 +238,7 @@ class MetricsCollector:
                         service, operation, time.time() - start_time
                     )
                     return result
-                except Exception as e:
+                except Exception:
                     self.track_service_latency(
                         service, operation, time.time() - start_time
                     )

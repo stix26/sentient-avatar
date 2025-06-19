@@ -1,6 +1,6 @@
 import base64
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict
 
 from .base import BaseService
 
@@ -26,7 +26,6 @@ class VisionService(BaseService):
 
     async def cleanup(self) -> None:
         """Cleanup Vision service resources"""
-        pass
 
     async def analyze_image(
         self,
