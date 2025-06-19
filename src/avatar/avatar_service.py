@@ -1619,13 +1619,17 @@ class AvatarService:
             try:
                 # Process frame
                 frame = self._decode_frame(request.frame)
+                start_time = time.time()
                 avatar_frame = await self.renderer.process_frame(
                     frame, confidence=request.confidence
                 )
+                duration = time.time() - start_time
+                AVATAR_LATENCY.labels("frame_processing").observe(duration)
+                AVATAR_REQUESTS.labels("frame").inc()
 
                 # Log to MLflow
                 self._log_avatar_interaction(
-                    request.session_id, request.user_id, avatar_frame
+                    request.session_id, request.user_id, avatar_frame, duration
                 )
 
                 return {"status": "success", "timestamp": datetime.now().isoformat()}
@@ -1644,8 +1648,8 @@ class AvatarService:
         return b""
 
     def _log_avatar_interaction(
-        self, session_id: str, user_id: str, avatar_frame: np.ndarray
-    ):
+        self, session_id: str, user_id: str, avatar_frame: np.ndarray, duration: float
+    ) -> None:
         """Log avatar interaction to MLflow."""
         try:
             with mlflow.start_run(run_name=f"avatar_session_{session_id}"):
@@ -1653,13 +1657,7 @@ class AvatarService:
                 mlflow.log_params({"session_id": session_id, "user_id": user_id})
 
                 # Log metrics
-                mlflow.log_metrics(
-                    {
-                        "frame_processing_time": AVATAR_LATENCY.labels(
-                            "frame_processing"
-                        ).observe()
-                    }
-                )
+                mlflow.log_metrics({"frame_processing_time": duration})
 
                 # Log frame
                 frame_path = f"/tmp/avatar_frame_{int(time.time())}.png"

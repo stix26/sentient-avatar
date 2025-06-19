@@ -56,8 +56,8 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit `.env` with your local settings. The provided example uses a local
 # PostgreSQL and Redis instance. Ensure the `POSTGRES_USER` in `.env` refers to
-# an existing database role (for example `postgres`). Using a non-existent role
-# like `root` will prevent the application from connecting. If these services
+# an existing database role. The provided `.env.example` sets this to `postgres`.
+# Using an invalid role such as `root` will prevent the application from connecting.
 # are unavailable the application will start with database initialization errors
 # logged but will continue running.
 

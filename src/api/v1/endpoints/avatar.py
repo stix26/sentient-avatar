@@ -133,7 +133,7 @@ async def stream_avatar(
     avatar_id: int,
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db),
-):
+) -> None:
     """
     Stream avatar updates in real-time.
     """

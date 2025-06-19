@@ -115,9 +115,8 @@ class ModelOptimizer:
                     )
 
                 # Measure optimization time
-                OPTIMIZATION_TIME.labels(request.optimization_type).observe(
-                    time.time() - start_time
-                )
+                duration = time.time() - start_time
+                OPTIMIZATION_TIME.labels(request.optimization_type).observe(duration)
 
                 # Save optimized model
                 output_path = self._save_optimized_model(
@@ -130,6 +129,7 @@ class ModelOptimizer:
                     request.optimization_type,
                     request.config,
                     output_path,
+                    duration,
                 )
 
                 return {
@@ -267,7 +267,8 @@ class ModelOptimizer:
         optimization_type: str,
         config: Dict[str, Any],
         output_path: str,
-    ):
+        duration: float,
+    ) -> None:
         """Log optimization results to MLflow."""
         try:
             # Log parameters
@@ -280,9 +281,7 @@ class ModelOptimizer:
             # Log metrics
             metrics = {
                 "model_size": os.path.getsize(output_path),
-                "optimization_time": OPTIMIZATION_TIME.labels(
-                    optimization_type
-                ).observe(),
+                "optimization_time": duration,
             }
 
             # Log to MLflow

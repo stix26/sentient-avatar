@@ -272,8 +272,12 @@ class ExplainabilityService:
                     )
 
                 # Log to MLflow
+                duration = time.time() - start_time
                 self._log_explanation(
-                    request.model_path, request.explanation_type, explanation
+                    request.model_path,
+                    request.explanation_type,
+                    explanation,
+                    duration,
                 )
 
                 return {
@@ -287,8 +291,12 @@ class ExplainabilityService:
                 raise HTTPException(status_code=500, detail=str(e))
 
     def _log_explanation(
-        self, model_path: str, explanation_type: str, explanation: Dict[str, Any]
-    ):
+        self,
+        model_path: str,
+        explanation_type: str,
+        explanation: Dict[str, Any],
+        duration: float,
+    ) -> None:
         """Log explanation to MLflow."""
         try:
             with mlflow.start_run(run_name=f"explanation_{explanation_type}"):
@@ -298,13 +306,7 @@ class ExplainabilityService:
                 )
 
                 # Log metrics
-                mlflow.log_metrics(
-                    {
-                        "explanation_time": EXPLANATION_TIME.labels(
-                            explanation_type
-                        ).observe()
-                    }
-                )
+                mlflow.log_metrics({"explanation_time": duration})
 
                 # Log artifacts
                 if "visualization_path" in explanation:
