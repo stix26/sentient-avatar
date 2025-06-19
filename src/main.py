@@ -83,7 +83,7 @@ setup_tracing(app)
 
 # Initialize database
 @app.on_event("startup")
-async def startup_event():
+async def startup_event() -> None:
     try:
         init_db()
     except Exception as e:  # pragma: no cover - optional DB in tests
@@ -93,7 +93,7 @@ async def startup_event():
 
 # Health check endpoint
 @app.get("/health")
-async def health_check():
+async def health_check() -> dict:
     return {"status": "healthy"}
 
 
@@ -105,7 +105,7 @@ app.include_router(avatar.router, prefix=settings.API_V1_STR)
 
 # Error handlers
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     logger.error(f"Global error handler caught: {str(exc)}")
     return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 

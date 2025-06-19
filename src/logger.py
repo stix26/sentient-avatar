@@ -8,7 +8,7 @@ from pythonjsonlogger import jsonlogger
 from src.config import settings
 
 
-def setup_logger():
+def setup_logger() -> logging.Logger:
     # Create logger
     logger = logging.getLogger("sentient_avatar")
     logger.setLevel(getattr(logging, settings.LOG_LEVEL.upper()))
