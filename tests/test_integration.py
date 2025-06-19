@@ -1,6 +1,8 @@
 from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
+
 from sentient_avatar.avatar_server import app
 from sentient_avatar.config.config import Config, get_default_config
 from sentient_avatar.services.factory import ServiceFactory

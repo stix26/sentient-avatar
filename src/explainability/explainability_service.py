@@ -12,6 +12,7 @@ import seaborn as sns
 import shap
 import torch
 import torch.nn as nn
+from captum.attr import IntegratedGradients
 from fastapi import FastAPI, HTTPException
 from mlflow.tracking import MlflowClient
 from prometheus_client import Counter, Gauge, Histogram
@@ -19,7 +20,6 @@ from pydantic import BaseModel
 from ray import serve
 from ray.serve.config import HTTPOptions
 from transformers import AutoModelForCausalLM
-from captum.attr import IntegratedGradients
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
