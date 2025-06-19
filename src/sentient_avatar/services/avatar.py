@@ -26,7 +26,6 @@ class AvatarService(BaseService):
 
     async def cleanup(self) -> None:
         """Cleanup Avatar service resources"""
-        pass
 
     async def generate_video(
         self,

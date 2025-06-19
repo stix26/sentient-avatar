@@ -1,24 +1,16 @@
-import json
 import logging
-import os
 import time
-from datetime import datetime, timedelta
-from pathlib import Path
+from datetime import datetime
 from typing import Any, Dict, List
 
 import numpy as np
-import pandas as pd
-import torch
 from alibi_detect import ChiSquareDrift, KSDrift, MMDDrift, TabularDrift
-from alibi_detect.utils.saving import load_detector, save_detector
 from fastapi import FastAPI, HTTPException
 from mlflow.tracking import MlflowClient
-from prometheus_client import Counter, Gauge, Histogram
+from prometheus_client import Gauge
 from pydantic import BaseModel
 from ray import serve
 from ray.serve.config import HTTPOptions
-from ray.serve.deployment import Deployment
-from scipy import stats
 from sklearn.ensemble import IsolationForest
 
 # Configure logging

@@ -1,24 +1,18 @@
 import hashlib
-import json
 import logging
 import os
-import time
 import uuid
 from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict
 
 import mlflow
-import numpy as np
-import ray
 import redis
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException
 from mlflow.tracking import MlflowClient
 from prometheus_client import Counter, Gauge, Histogram
 from pydantic import BaseModel
 from ray import serve
 from ray.serve.config import HTTPOptions
-from ray.serve.deployment import Deployment
 from scipy import stats
 
 # Configure logging

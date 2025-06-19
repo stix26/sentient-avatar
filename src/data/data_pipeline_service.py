@@ -1,18 +1,12 @@
 import asyncio
 import json
 import logging
-import os
 import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from datetime import datetime
+from typing import Any, Dict, List
 
 import mlflow
-import numpy as np
-import pandas as pd
 import torch
-import torch.nn as nn
-import torch.optim as optim
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from kafka import KafkaConsumer, KafkaProducer
 from kafka.errors import KafkaError
@@ -21,7 +15,6 @@ from prometheus_client import Counter, Gauge, Histogram
 from pydantic import BaseModel, Field
 from ray import serve
 from ray.serve.config import HTTPOptions
-from ray.serve.deployment import Deployment
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import DBSCAN
 from sklearn.decomposition import PCA
@@ -29,7 +22,6 @@ from sklearn.preprocessing import StandardScaler
 from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from torch.utils.data import DataLoader, Dataset
 from transformers import pipeline
 
 # Configure logging
@@ -245,7 +237,7 @@ class DataPipeline:
             )
             session.add(data_point)
             session.commit()
-        except Exception as e:
+        except Exception:
             session.rollback()
             raise
         finally:
@@ -318,7 +310,7 @@ class DataPipeline:
 def main():
     # Load configuration
     config = {
-        "database_url": "postgresql://user:password@postgres:5432/sentient_avatar",
+        "database_url": "postgresql://postgres:postgres@postgres:5432/test_db",
         "kafka_servers": ["localhost:9092"],
         "kafka_topic": "sentient-avatar-data",
         "quality_model_path": "/app/models/quality_classifier",

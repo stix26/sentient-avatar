@@ -25,7 +25,6 @@ class LLMService(BaseService):
 
     async def cleanup(self) -> None:
         """Cleanup LLM service resources"""
-        pass
 
     async def generate(
         self,

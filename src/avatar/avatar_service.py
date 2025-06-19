@@ -1,17 +1,13 @@
-import asyncio
 import json
 import logging
-import os
 import time
 from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import cv2
 import mediapipe as mp
 import mlflow
 import numpy as np
-import ray
 import torch
 import torch.nn as nn
 from fastapi import FastAPI, HTTPException, WebSocket
@@ -20,8 +16,7 @@ from prometheus_client import Counter, Gauge, Histogram
 from pydantic import BaseModel, Field
 from ray import serve
 from ray.serve.config import HTTPOptions
-from ray.serve.deployment import Deployment
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -1055,7 +1050,7 @@ class AvatarRenderer:
 
             # Update perception if stimulus is provided
             if stimulus:
-                perception_state = self.natural_behaviors.update_perception(stimulus)
+                self.natural_behaviors.update_perception(stimulus)
                 perception_expression = (
                     self.natural_behaviors.get_perception_expression()
                 )
@@ -1079,10 +1074,10 @@ class AvatarRenderer:
                 )
 
                 # Explore faith and beliefs
-                belief_system = self.cognitive_state.explore_faith(cognitive_stimulus)
+                self.cognitive_state.explore_faith(cognitive_stimulus)
 
                 # Analyze bias
-                bias_metrics = self.cognitive_state.analyze_bias(cognitive_stimulus)
+                self.cognitive_state.analyze_bias(cognitive_stimulus)
 
                 # Get cognitive expression
                 cognitive_expression = self.cognitive_state.get_cognitive_expression()
@@ -1210,7 +1205,6 @@ class AvatarRenderer:
     def _update_social_behavior(self):
         """Update social behavior based on context."""
         # Implement social behavior updates
-        pass
 
     def _update_cognitive_processes(self, context: Dict[str, Any]) -> None:
         """Update the avatar's cognitive processes based on intellectual context."""

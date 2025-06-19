@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict, Optional
 
 from ..cache.redis_cache import RedisCache
 from ..config.config import Config

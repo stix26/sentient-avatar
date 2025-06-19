@@ -51,14 +51,11 @@ class BaseService(ABC):
     @abstractmethod
     async def health_check(self) -> bool:
         """Check if service is healthy"""
-        pass
 
     @abstractmethod
     async def initialize(self) -> None:
         """Initialize service connection"""
-        pass
 
     @abstractmethod
     async def cleanup(self) -> None:
         """Cleanup service resources"""
-        pass

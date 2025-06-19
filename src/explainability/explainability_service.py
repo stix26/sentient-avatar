@@ -1,17 +1,13 @@
-import json
 import logging
-import os
 import time
 from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import lime
 import lime.lime_text
 import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
-import ray
 import seaborn as sns
 import shap
 import torch
@@ -19,12 +15,10 @@ import torch.nn as nn
 from fastapi import FastAPI, HTTPException
 from mlflow.tracking import MlflowClient
 from prometheus_client import Counter, Gauge, Histogram
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from ray import serve
 from ray.serve.config import HTTPOptions
-from ray.serve.deployment import Deployment
-from sklearn.metrics import confusion_matrix
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

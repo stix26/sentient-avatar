@@ -1,21 +1,14 @@
-import json
 import logging
-import os
 import time
 from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
-import numpy as np
-import requests
 import torch
 from fastapi import FastAPI, HTTPException
 from prometheus_client import Counter, Gauge, Histogram
 from pydantic import BaseModel
 from ray import serve
 from ray.serve.config import HTTPOptions
-from ray.serve.deployment import Deployment
-from ray.serve.schema import ServeApplicationSchema
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 # Configure logging

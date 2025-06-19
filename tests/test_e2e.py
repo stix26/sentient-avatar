@@ -1,11 +1,9 @@
-import asyncio
 import base64
 import json
 import os
 import subprocess
 import time
 import wave
-from pathlib import Path
 
 import numpy as np
 import pytest
@@ -151,7 +149,7 @@ async def test_memory_flow(service_factory):
     """Test complete memory flow."""
     # Get services
     vector_store = service_factory.get_vector_store()
-    llm = service_factory.get_llm()
+    service_factory.get_llm()
 
     # Test vector store
     points = [
