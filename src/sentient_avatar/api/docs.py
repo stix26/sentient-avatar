@@ -6,9 +6,7 @@ import yaml
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
-DESCRIPTION = (
-    Path(__file__).resolve().parents[2] / "docs" / "api.md"
-).read_text()
+DESCRIPTION = (Path(__file__).resolve().parents[2] / "docs" / "api.md").read_text()
 
 
 def custom_openapi(app: FastAPI) -> Dict[str, Any]:
