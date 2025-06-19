@@ -13,6 +13,8 @@ from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 class User(BaseModel):
     id: str

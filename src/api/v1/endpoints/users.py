@@ -6,7 +6,11 @@ from sqlalchemy.orm import Session
 from src.database import get_db
 from src.models.user import User
 from src.schemas.user import UserCreate, UserResponse, UserUpdate
-from src.security import get_current_active_user, get_current_superuser
+from src.security import (
+    get_current_active_user,
+    get_current_superuser,
+    get_password_hash,
+)
 
 router = APIRouter(prefix="/users", tags=["users"])
 

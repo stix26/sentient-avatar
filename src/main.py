@@ -15,6 +15,7 @@ from src.monitoring import (
     setup_tracing,
 )
 from src.security import rate_limit_middleware
+from src.api.v1.endpoints import auth, avatar, users
 
 # Create FastAPI app
 app = FastAPI(
@@ -97,8 +98,6 @@ async def health_check():
 
 
 # Import and include routers
-from src.api.v1.endpoints import auth, avatar, users
-
 app.include_router(auth.router, prefix=settings.API_V1_STR)
 app.include_router(users.router, prefix=settings.API_V1_STR)
 app.include_router(avatar.router, prefix=settings.API_V1_STR)
