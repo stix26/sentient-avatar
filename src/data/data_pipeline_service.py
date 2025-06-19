@@ -1,35 +1,36 @@
-import os
-import json
-import time
 import asyncio
+import json
 import logging
+import os
+import time
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import mlflow
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from typing import Dict, List, Any, Optional
-from datetime import datetime, timedelta
-from fastapi import FastAPI, HTTPException, BackgroundTasks
-from pydantic import BaseModel, Field
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, JSON
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from kafka import KafkaProducer, KafkaConsumer
-from kafka.errors import KafkaError
-from prometheus_client import Counter, Histogram, Gauge
-from ray import serve
-from ray.serve.deployment import Deployment
-from ray.serve.config import HTTPOptions
-from transformers import pipeline
-from sentence_transformers import SentenceTransformer
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-from sklearn.cluster import DBSCAN
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
-import mlflow
+from fastapi import BackgroundTasks, FastAPI, HTTPException
+from kafka import KafkaConsumer, KafkaProducer
+from kafka.errors import KafkaError
 from mlflow.tracking import MlflowClient
+from prometheus_client import Counter, Gauge, Histogram
+from pydantic import BaseModel, Field
+from ray import serve
+from ray.serve.config import HTTPOptions
+from ray.serve.deployment import Deployment
+from sentence_transformers import SentenceTransformer
+from sklearn.cluster import DBSCAN
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from torch.utils.data import DataLoader, Dataset
+from transformers import pipeline
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

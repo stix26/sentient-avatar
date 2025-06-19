@@ -1,36 +1,37 @@
-from fastapi import (
-    FastAPI,
-    WebSocket,
-    WebSocketDisconnect,
-    HTTPException,
-    UploadFile,
-    File,
-    Form,
-    Depends,
-)
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, JSONResponse
-from typing import Optional, List, Dict, Any
 import asyncio
+import base64
 import json
 import logging
-from datetime import datetime
-import base64
 import os
+from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from .services.factory import ServiceFactory
-from .services.llm import LLMService
-from .services.asr import ASRService
-from .services.tts import TTSService
-from .services.avatar import AvatarService
-from .services.vision import VisionService
-from .services.vector_store import VectorStoreService
+from fastapi import (
+    Depends,
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    UploadFile,
+    WebSocket,
+    WebSocketDisconnect,
+)
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, StreamingResponse
+
+from .cache.redis_cache import RedisCache
 from .config.config import Config, load_config
 from .logging.logger import get_logger
 from .monitoring.metrics import MetricsCollector
 from .rate_limit.rate_limiter import RateLimiter
-from .cache.redis_cache import RedisCache
+from .services.asr import ASRService
+from .services.avatar import AvatarService
+from .services.factory import ServiceFactory
+from .services.llm import LLMService
+from .services.tts import TTSService
+from .services.vector_store import VectorStoreService
+from .services.vision import VisionService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

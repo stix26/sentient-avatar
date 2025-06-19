@@ -1,8 +1,9 @@
 from __future__ import annotations
-from typing import Any, Dict, Optional
+
 import logging
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

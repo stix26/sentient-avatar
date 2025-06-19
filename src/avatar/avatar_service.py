@@ -1,26 +1,27 @@
-import os
-import json
-import time
-import logging
 import asyncio
-import numpy as np
+import json
+import logging
+import os
+import time
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
 from pathlib import Path
-from fastapi import FastAPI, WebSocket, HTTPException
-from pydantic import BaseModel, Field
-from prometheus_client import Counter, Histogram, Gauge
-import torch
-import torch.nn as nn
+from typing import Any, Dict, List, Optional, Tuple
+
 import cv2
 import mediapipe as mp
-from transformers import AutoTokenizer, AutoModelForCausalLM
-import ray
-from ray import serve
-from ray.serve.deployment import Deployment
-from ray.serve.config import HTTPOptions
 import mlflow
+import numpy as np
+import ray
+import torch
+import torch.nn as nn
+from fastapi import FastAPI, HTTPException, WebSocket
 from mlflow.tracking import MlflowClient
+from prometheus_client import Counter, Gauge, Histogram
+from pydantic import BaseModel, Field
+from ray import serve
+from ray.serve.config import HTTPOptions
+from ray.serve.deployment import Deployment
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

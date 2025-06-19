@@ -1,12 +1,13 @@
-from prometheus_client import Counter, Histogram, Gauge, Summary
-from prometheus_client.exposition import start_http_server
-import time
-import logging
-from typing import Dict, Any, Optional, Callable
-from functools import wraps
-import psutil
 import asyncio
+import logging
+import time
 from datetime import datetime
+from functools import wraps
+from typing import Any, Callable, Dict, Optional
+
+import psutil
+from prometheus_client import Counter, Gauge, Histogram, Summary
+from prometheus_client.exposition import start_http_server
 
 logger = logging.getLogger(__name__)
 

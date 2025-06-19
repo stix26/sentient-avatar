@@ -1,6 +1,7 @@
-from typing import Dict, Any, AsyncGenerator
 import asyncio
 import time
+from typing import Any, AsyncGenerator, Dict
+
 from src.models.avatar import Avatar
 
 

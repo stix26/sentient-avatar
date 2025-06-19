@@ -1,9 +1,10 @@
-from fastapi.openapi.utils import get_openapi
-from fastapi import FastAPI
-from typing import Dict, Any
 import json
-import yaml
 from pathlib import Path
+from typing import Any, Dict
+
+import yaml
+from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 
 
 def custom_openapi(app: FastAPI) -> Dict[str, Any]:

@@ -1,6 +1,7 @@
-from typing import Dict, Any, List, Optional
-from .base import BaseService
 import logging
+from typing import Any, Dict, List, Optional
+
+from .base import BaseService
 
 logger = logging.getLogger(__name__)
 

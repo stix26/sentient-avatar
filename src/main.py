@@ -1,16 +1,18 @@
+import time
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import time
 from prometheus_client import make_asgi_app
+
 from src.config import settings
 from src.database import init_db
 from src.logger import logger
 from src.monitoring import (
-    setup_tracing,
+    ACTIVE_REQUESTS,
     REQUEST_COUNT,
     REQUEST_LATENCY,
-    ACTIVE_REQUESTS,
+    setup_tracing,
 )
 from src.security import rate_limit_middleware
 
@@ -95,7 +97,7 @@ async def health_check():
 
 
 # Import and include routers
-from src.api.v1.endpoints import auth, users, avatar
+from src.api.v1.endpoints import auth, avatar, users
 
 app.include_router(auth.router, prefix=settings.API_V1_STR)
 app.include_router(users.router, prefix=settings.API_V1_STR)

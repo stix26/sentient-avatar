@@ -1,28 +1,31 @@
-import os
 import json
-import time
-import torch
 import logging
-import numpy as np
-from pathlib import Path
-from typing import Dict, List, Any, Optional
+import os
+import time
 from datetime import datetime
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-from torch.quantization import quantize_dynamic
-from torch.quantization import get_default_qconfig
-from torch.quantization import prepare_qat
-from torch.quantization import convert
-from torch.nn.utils import prune
-from torch.nn import functional as F
-from torch.utils.data import Dataset, DataLoader
-from prometheus_client import Counter, Histogram, Gauge
-from ray import serve
-from ray.serve.deployment import Deployment
-from ray.serve.config import HTTPOptions
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 import mlflow
+import numpy as np
+import torch
+from fastapi import FastAPI, HTTPException
 from mlflow.tracking import MlflowClient
+from prometheus_client import Counter, Gauge, Histogram
+from pydantic import BaseModel
+from ray import serve
+from ray.serve.config import HTTPOptions
+from ray.serve.deployment import Deployment
+from torch.nn import functional as F
+from torch.nn.utils import prune
+from torch.quantization import (
+    convert,
+    get_default_qconfig,
+    prepare_qat,
+    quantize_dynamic,
+)
+from torch.utils.data import DataLoader, Dataset
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

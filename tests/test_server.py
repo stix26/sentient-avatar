@@ -1,8 +1,9 @@
+import base64
+import json
+from unittest.mock import AsyncMock, Mock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import Mock, patch, AsyncMock
-import json
-import base64
 
 from sentient_avatar.avatar_server import app
 

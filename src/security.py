@@ -1,10 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Optional
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 from sqlalchemy.orm import Session
+
 from src.config import settings
 from src.database import get_db
 from src.models.user import User
@@ -94,10 +96,11 @@ def verify_token(token: str) -> dict:
 
 
 # Rate limiting
-from fastapi import Request
-from fastapi.responses import JSONResponse
 import time
 from collections import defaultdict
+
+from fastapi import Request
+from fastapi.responses import JSONResponse
 
 
 # Simple in-memory rate limiter

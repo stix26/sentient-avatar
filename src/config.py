@@ -1,7 +1,8 @@
-from typing import Optional
-from pydantic_settings import BaseSettings
-from pydantic import PostgresDsn, RedisDsn, validator
 import secrets
+from typing import Optional
+
+from pydantic import PostgresDsn, RedisDsn, validator
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):

@@ -1,15 +1,16 @@
-from typing import Dict, Any, Optional, Type
-from .llm import LLMService
-from .asr import ASRService
-from .tts import TTSService
-from .avatar import AvatarService
-from .vision import VisionService
-from .vector_store import VectorStoreService
+from typing import Any, Dict, Optional, Type
+
+from ..cache.redis_cache import RedisCache
 from ..config.config import Config
 from ..logging.logger import get_logger
-from ..cache.redis_cache import RedisCache
-from ..rate_limit.rate_limiter import RateLimiter
 from ..monitoring.metrics import MetricsCollector
+from ..rate_limit.rate_limiter import RateLimiter
+from .asr import ASRService
+from .avatar import AvatarService
+from .llm import LLMService
+from .tts import TTSService
+from .vector_store import VectorStoreService
+from .vision import VisionService
 
 logger = get_logger(__name__)
 

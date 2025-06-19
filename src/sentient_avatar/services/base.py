@@ -1,7 +1,8 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
+
 import aiohttp
-import logging
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger(__name__)

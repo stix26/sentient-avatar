@@ -1,15 +1,16 @@
-import pytest
 import asyncio
-import json
 import base64
+import json
 import os
 import subprocess
 import time
+import wave
 from pathlib import Path
+
+import numpy as np
+import pytest
 import requests
 import websockets
-import wave
-import numpy as np
 from PIL import Image
 
 from sentient_avatar.config.config import get_default_config

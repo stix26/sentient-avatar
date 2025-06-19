@@ -1,7 +1,7 @@
-from typing import Dict, Any, Optional
-import time
-import random
 import math
+import random
+import time
+from typing import Any, Dict, Optional
 
 
 class PhysicalService:
