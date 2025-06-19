@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from prometheus_client import make_asgi_app
 
+from src.api.v1.endpoints import auth, avatar, users
 from src.config import settings
 from src.database import init_db
 from src.logger import logger
@@ -15,7 +16,6 @@ from src.monitoring import (
     setup_tracing,
 )
 from src.security import rate_limit_middleware
-from src.api.v1.endpoints import auth, avatar, users
 
 # Create FastAPI app
 app = FastAPI(
