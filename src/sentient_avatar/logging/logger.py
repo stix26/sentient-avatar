@@ -1,11 +1,11 @@
+import json
 import logging
 import logging.handlers
-import json
-import sys
 import os
+import sys
 from datetime import datetime
-from typing import Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 
 class StructuredLogger:

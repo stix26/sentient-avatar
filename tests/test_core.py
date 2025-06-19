@@ -1,12 +1,13 @@
-import pytest
 import asyncio
-from unittest.mock import Mock, patch, AsyncMock
 import base64
 import json
 from datetime import datetime
+from unittest.mock import AsyncMock, Mock, patch
+
+import pytest
 
 from sentient_avatar.agent_core import SentientAgent
-from sentient_avatar.audio_pipeline import AudioPipeline, AudioChunk
+from sentient_avatar.audio_pipeline import AudioChunk, AudioPipeline
 from sentient_avatar.memory import Memory
 from sentient_avatar.vision import Vision
 

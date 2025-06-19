@@ -1,25 +1,27 @@
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException, status, WebSocket
+
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, status
 from sqlalchemy.orm import Session
+
 from src.database import get_db
 from src.models.user import User
+from src.monitoring import (
+    AVATAR_CREATIONS,
+    AVATAR_UPDATES,
+    COGNITIVE_PROCESSING_TIME,
+    EMOTION_CHANGES,
+    PHYSICAL_ACTION_TIME,
+)
 from src.schemas.avatar import (
     AvatarCreate,
-    AvatarUpdate,
     AvatarResponse,
-    EmotionUpdate,
+    AvatarUpdate,
     CognitiveUpdate,
+    EmotionUpdate,
     PhysicalUpdate,
 )
 from src.security import get_current_active_user
 from src.services.avatar import AvatarService
-from src.monitoring import (
-    AVATAR_CREATIONS,
-    AVATAR_UPDATES,
-    EMOTION_CHANGES,
-    COGNITIVE_PROCESSING_TIME,
-    PHYSICAL_ACTION_TIME,
-)
 
 router = APIRouter(prefix="/avatar", tags=["avatar"])
 avatar_service = AvatarService()

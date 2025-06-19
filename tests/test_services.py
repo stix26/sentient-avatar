@@ -1,18 +1,19 @@
-import pytest
 import asyncio
-from unittest.mock import Mock, patch
 import base64
 import json
 from datetime import datetime
+from unittest.mock import Mock, patch
 
-from sentient_avatar.services.factory import ServiceFactory
+import pytest
+
 from sentient_avatar.config.config import Config, get_default_config
-from sentient_avatar.services.llm import LLMService
 from sentient_avatar.services.asr import ASRService
-from sentient_avatar.services.tts import TTSService
 from sentient_avatar.services.avatar import AvatarService
-from sentient_avatar.services.vision import VisionService
+from sentient_avatar.services.factory import ServiceFactory
+from sentient_avatar.services.llm import LLMService
+from sentient_avatar.services.tts import TTSService
 from sentient_avatar.services.vector_store import VectorStoreService
+from sentient_avatar.services.vision import VisionService
 
 # Test data
 TEST_AUDIO = b"test audio data"

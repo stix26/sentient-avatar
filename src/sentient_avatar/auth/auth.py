@@ -1,18 +1,19 @@
-import jwt
+import base64
 import time
 import uuid
 from datetime import datetime, timedelta
+from io import BytesIO
 from typing import Dict, List, Optional, Union
-from fastapi import HTTPException, Security, Depends
+
+import bcrypt
+import jwt
+import pyotp
+import qrcode
+import redis
+from fastapi import Depends, HTTPException, Security
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
-import redis
-import bcrypt
-import pyotp
-import qrcode
-from io import BytesIO
-import base64
 
 
 class User(BaseModel):

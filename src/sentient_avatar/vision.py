@@ -1,7 +1,9 @@
 from __future__ import annotations
-from typing import Any, Dict, List
+
 import logging
 from io import BytesIO
+from typing import Any, Dict, List
+
 from PIL import Image
 
 logger = logging.getLogger(__name__)

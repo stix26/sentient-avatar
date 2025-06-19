@@ -1,21 +1,22 @@
-import os
 import json
-import time
-import torch
 import logging
-import requests
-import numpy as np
-from pathlib import Path
-from typing import Dict, List, Any
+import os
+import time
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
+
+import numpy as np
+import requests
+import torch
 from fastapi import FastAPI, HTTPException
+from prometheus_client import Counter, Gauge, Histogram
 from pydantic import BaseModel
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-from prometheus_client import Counter, Histogram, Gauge
 from ray import serve
-from ray.serve.deployment import Deployment
 from ray.serve.config import HTTPOptions
+from ray.serve.deployment import Deployment
 from ray.serve.schema import ServeApplicationSchema
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

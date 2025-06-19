@@ -1,6 +1,6 @@
-from typing import Dict, Any, Optional
 import random
 import time
+from typing import Any, Dict, Optional
 
 
 class EmotionService:

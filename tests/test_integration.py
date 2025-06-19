@@ -1,13 +1,14 @@
-import pytest
 import asyncio
-import json
 import base64
+import json
+from unittest.mock import MagicMock, patch
+
+import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock
 
 from sentient_avatar.avatar_server import app
-from sentient_avatar.services.factory import ServiceFactory
 from sentient_avatar.config.config import Config, get_default_config
+from sentient_avatar.services.factory import ServiceFactory
 
 
 @pytest.fixture

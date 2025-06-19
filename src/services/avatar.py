@@ -1,17 +1,19 @@
-from typing import Optional, Dict, Any, AsyncGenerator
-from sqlalchemy.orm import Session
+from typing import Any, AsyncGenerator, Dict, Optional
+
 from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
+
 from src.models.avatar import Avatar
 from src.models.user import User
 from src.schemas.avatar import (
     AvatarCreate,
     AvatarUpdate,
-    EmotionUpdate,
     CognitiveUpdate,
+    EmotionUpdate,
     PhysicalUpdate,
 )
-from src.services.emotion import EmotionService
 from src.services.cognitive import CognitiveService
+from src.services.emotion import EmotionService
 from src.services.physical import PhysicalService
 from src.services.streaming import StreamingService
 
