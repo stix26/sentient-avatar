@@ -36,7 +36,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/sentient-avatar:${{ github.sha }}
       
       - name: Deploy to production
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
