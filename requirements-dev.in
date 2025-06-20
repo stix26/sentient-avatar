@@ -40,7 +40,7 @@ jupyter==1.0.0
 # Debugging
 debugpy==1.8.0
 memory-profiler==0.61.0
-line-profiler==4.1.2
+line-profiler==4.2.0
 
 # Database Tools
 alembic==1.13.1
