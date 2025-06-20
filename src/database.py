@@ -1,6 +1,8 @@
+from typing import Generator
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import QueuePool
 
 from src.config import settings
@@ -21,18 +23,21 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Create Base class
 Base = declarative_base()
 
+
 # Dependency
-def get_db():
+def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
+
 # Database initialization
-def init_db():
+def init_db() -> None:
     Base.metadata.create_all(bind=engine)
 
+
 # Database cleanup
-def cleanup_db():
-    Base.metadata.drop_all(bind=engine) 
+def cleanup_db() -> None:
+    Base.metadata.drop_all(bind=engine)

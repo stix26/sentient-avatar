@@ -1,8 +1,10 @@
 from __future__ import annotations
-from typing import Any, Dict, List, Optional
+
 import logging
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
+
 
 class Memory:
     """Lightweight memory wrapper around a vector store service for testing."""

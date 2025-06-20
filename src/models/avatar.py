@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, JSON, DateTime, ForeignKey, func
+from sqlalchemy import JSON, Column, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import relationship
+
 from src.database import Base
+
 
 class Avatar(Base):
     __tablename__ = "avatars"
@@ -37,5 +39,5 @@ class Avatar(Base):
             "current_physical_state": self.current_physical_state,
             "owner_id": self.owner_id,
             "created_at": self.created_at,
-            "updated_at": self.updated_at
-        } 
+            "updated_at": self.updated_at,
+        }

@@ -55,8 +55,13 @@ pip install -r requirements.txt
 # Configure environment
 cp .env.example .env
 # Edit `.env` with your local settings. The provided example uses a local
-# PostgreSQL and Redis instance. If these are unavailable the application will
-# start with database initialization errors logged but will continue running.
+# PostgreSQL and Redis instance. Ensure the `POSTGRES_USER` in `.env` refers to
+# an existing database role. The provided `.env.example` sets this to `postgres`.
+# Using an invalid role such as `root` will prevent the application from connecting.
+# If the role specified in `POSTGRES_USER` does not exist, create it first:
+# `createuser -s $POSTGRES_USER`.
+# When the database or Redis services are unavailable the application will start
+# with database initialization errors logged but will continue running.
 
 # Initialize database
 alembic upgrade head
@@ -139,6 +144,19 @@ The system includes comprehensive monitoring:
 - **Grafana**: Dashboards at `http://localhost:3000`
 - **OpenTelemetry**: Distributed tracing
 - **Structured Logging**: JSON-formatted logs
+
+### Redis Memory Overcommit
+
+In production you may see warnings about memory overcommit when Redis starts.
+Consider adding the following to your system configuration:
+
+```bash
+sudo sysctl vm.overcommit_memory=1
+```
+
+This setting allows Redis to allocate memory more effectively. Persist it by
+adding `vm.overcommit_memory = 1` to `/etc/sysctl.conf` and reloading with
+`sudo sysctl -p`.
 
 ## 🔒 Security
 

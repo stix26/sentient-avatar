@@ -1,6 +1,8 @@
-from sqlalchemy import Boolean, Column, Integer, String, DateTime, func
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, func
 from sqlalchemy.orm import relationship
+
 from src.database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -16,7 +18,9 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
-    avatars = relationship("Avatar", back_populates="owner", cascade="all, delete-orphan")
+    avatars = relationship(
+        "Avatar", back_populates="owner", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -30,4 +34,4 @@ class User(Base):
         return False
 
     def get_id(self):
-        return str(self.id) 
+        return str(self.id)

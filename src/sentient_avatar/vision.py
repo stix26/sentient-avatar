@@ -1,10 +1,13 @@
 from __future__ import annotations
-from typing import Any, Dict, List
+
 import logging
 from io import BytesIO
+from typing import Any, Dict, List
+
 from PIL import Image
 
 logger = logging.getLogger(__name__)
+
 
 class Vision:
     """Minimal vision wrapper used for tests."""
@@ -12,7 +15,9 @@ class Vision:
     def __init__(self, vision_service) -> None:
         self.vision_service = vision_service
 
-    async def analyze_image(self, image_data: bytes, prompt: str | None = None) -> Dict[str, Any]:
+    async def analyze_image(
+        self, image_data: bytes, prompt: str | None = None
+    ) -> Dict[str, Any]:
         return await self.vision_service.analyze_image(image_data)
 
     async def describe_image(self, image_data: bytes) -> Dict[str, Any]:
