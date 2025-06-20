@@ -50,7 +50,7 @@ celery==5.3.6
 # AI & ML
 torch>=2.2.0
 transformers>=4.48.0
-numpy==1.26.3
+numpy==1.26.4
 pandas==2.2.0
 scikit-learn==1.4.0
 tokenizers>=0.20.3
