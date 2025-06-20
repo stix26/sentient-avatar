@@ -524,7 +524,7 @@ python-jose==3.3.0
     # via -r requirements-dev.in
 python-json-logger==3.3.0
     # via jupyter-events
-python-multipart==0.0.9
+python-multipart==0.0.18
     # via -r requirements-dev.in
 pyyaml==6.0.2
     # via
