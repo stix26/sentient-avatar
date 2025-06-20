@@ -1615,10 +1615,11 @@ class AvatarService:
                 await websocket.close()
 
         @self.app.post("/avatar/expression")
-        async def update_expression(request: AvatarRequest):
+        async def update_expression(request: AvatarRequest) -> dict[str, Any]:
             try:
                 # Process frame
-                frame = self._decode_frame(request.frame)
+                frame_bytes = request.frame.encode()
+                frame = self._decode_frame(frame_bytes)
                 start_time = time.time()
                 avatar_frame = await self.renderer.process_frame(
                     frame, confidence=request.confidence

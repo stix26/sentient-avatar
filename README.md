@@ -58,8 +58,10 @@ cp .env.example .env
 # PostgreSQL and Redis instance. Ensure the `POSTGRES_USER` in `.env` refers to
 # an existing database role. The provided `.env.example` sets this to `postgres`.
 # Using an invalid role such as `root` will prevent the application from connecting.
-# are unavailable the application will start with database initialization errors
-# logged but will continue running.
+# If the role specified in `POSTGRES_USER` does not exist, create it first:
+# `createuser -s $POSTGRES_USER`.
+# When the database or Redis services are unavailable the application will start
+# with database initialization errors logged but will continue running.
 
 # Initialize database
 alembic upgrade head
