@@ -1,3 +1,4 @@
+from typing import Iterator
 from unittest.mock import patch
 
 import pytest
@@ -9,19 +10,19 @@ from sentient_avatar.services.factory import ServiceFactory
 
 
 @pytest.fixture
-def config():
+def config() -> Config:
     """Create test configuration."""
     return Config.parse_obj(get_default_config())
 
 
 @pytest.fixture
-def service_factory(config):
+def service_factory(config: Config) -> ServiceFactory:
     """Create service factory."""
     return ServiceFactory(config)
 
 
 @pytest.fixture
-def client(service_factory):
+def client(service_factory: ServiceFactory) -> Iterator[TestClient]:
     """Create test client."""
     with patch("sentient_avatar.avatar_server.service_factory", service_factory):
         with TestClient(app) as client:
@@ -29,7 +30,7 @@ def client(service_factory):
 
 
 @pytest.mark.asyncio
-async def test_chat_endpoint(client):
+async def test_chat_endpoint(client: TestClient) -> None:
     """Test chat endpoint."""
     # Mock service responses
     with patch("sentient_avatar.services.llm.LLMService.generate") as mock_generate:
@@ -56,7 +57,7 @@ async def test_chat_endpoint(client):
 
 
 @pytest.mark.asyncio
-async def test_transcribe_endpoint(client):
+async def test_transcribe_endpoint(client: TestClient) -> None:
     """Test transcribe endpoint."""
     # Mock service response
     with patch("sentient_avatar.services.asr.ASRService.transcribe") as mock_transcribe:
@@ -75,7 +76,7 @@ async def test_transcribe_endpoint(client):
 
 
 @pytest.mark.asyncio
-async def test_analyze_image_endpoint(client):
+async def test_analyze_image_endpoint(client: TestClient) -> None:
     """Test analyze image endpoint."""
     # Mock service response
     with patch(
@@ -101,7 +102,7 @@ async def test_analyze_image_endpoint(client):
 
 
 @pytest.mark.asyncio
-async def test_health_endpoint(client):
+async def test_health_endpoint(client: TestClient) -> None:
     """Test health endpoint."""
     # Mock service responses
     with patch(
@@ -149,7 +150,7 @@ async def test_health_endpoint(client):
 
 
 @pytest.mark.asyncio
-async def test_websocket_endpoint(client):
+async def test_websocket_endpoint(client: TestClient) -> None:
     """Test WebSocket endpoint."""
     # Mock service responses
     with patch("sentient_avatar.services.llm.LLMService.generate") as mock_generate:
@@ -179,7 +180,7 @@ async def test_websocket_endpoint(client):
 
 
 @pytest.mark.asyncio
-async def test_rate_limiting(client):
+async def test_rate_limiting(client: TestClient) -> None:
     """Test rate limiting."""
     # Mock rate limiter
     with patch("sentient_avatar.avatar_server.rate_limiter") as mock_rate_limiter:
@@ -193,7 +194,7 @@ async def test_rate_limiting(client):
 
 
 @pytest.mark.asyncio
-async def test_error_handling(client):
+async def test_error_handling(client: TestClient) -> None:
     """Test error handling."""
     # Mock service error
     with patch(
@@ -210,7 +211,7 @@ async def test_error_handling(client):
 
 
 @pytest.mark.asyncio
-async def test_metrics_endpoint(client):
+async def test_metrics_endpoint(client: TestClient) -> None:
     """Test metrics endpoint."""
     # Mock metrics collector
     with patch("sentient_avatar.avatar_server.metrics") as mock_metrics:

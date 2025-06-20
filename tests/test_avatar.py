@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-def test_avatar_creation(client: TestClient):
+def test_avatar_creation(client: TestClient) -> None:
     response = client.post(
         "/api/v1/avatar",
         json={
@@ -24,7 +24,7 @@ def test_avatar_creation(client: TestClient):
     assert data["skin_tone"] == "fair"
 
 
-def test_avatar_update(client: TestClient):
+def test_avatar_update(client: TestClient) -> None:
     # First create an avatar
     create_response = client.post(
         "/api/v1/avatar",
@@ -52,7 +52,7 @@ def test_avatar_update(client: TestClient):
     assert data["skin_tone"] == "fair"  # Unchanged
 
 
-def test_avatar_emotions(client: TestClient):
+def test_avatar_emotions(client: TestClient) -> None:
     # Create an avatar
     create_response = client.post(
         "/api/v1/avatar",
@@ -78,7 +78,7 @@ def test_avatar_emotions(client: TestClient):
     assert data["emotion_intensity"] == 0.8
 
 
-def test_avatar_cognitive(client: TestClient):
+def test_avatar_cognitive(client: TestClient) -> None:
     # Create an avatar
     create_response = client.post(
         "/api/v1/avatar",
@@ -105,7 +105,7 @@ def test_avatar_cognitive(client: TestClient):
     assert "emotional_impact" in data
 
 
-def test_avatar_physical(client: TestClient):
+def test_avatar_physical(client: TestClient) -> None:
     # Create an avatar
     create_response = client.post(
         "/api/v1/avatar",
@@ -134,7 +134,7 @@ def test_avatar_physical(client: TestClient):
 
 
 @pytest.mark.asyncio
-async def test_avatar_streaming(client: TestClient):
+async def test_avatar_streaming(client: TestClient) -> None:
     # Create an avatar
     create_response = client.post(
         "/api/v1/avatar",

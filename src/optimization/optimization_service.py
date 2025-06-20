@@ -4,23 +4,23 @@ import time
 from datetime import datetime
 from typing import Any, cast
 
-import mlflow  # type: ignore[import-not-found]
-import torch  # type: ignore[import-not-found]
-import torch.nn.functional as F  # type: ignore[import-not-found]  # noqa: N812
-from fastapi import FastAPI, HTTPException  # type: ignore[import-not-found]
-from mlflow.tracking import MlflowClient  # type: ignore[import-not-found]
-from prometheus_client import Gauge, Histogram  # type: ignore[import-not-found]
-from pydantic import BaseModel  # type: ignore[import-not-found]
-from ray import serve  # type: ignore[import-not-found]
-from ray.serve.config import HTTPOptions  # type: ignore[import-not-found]
-from torch.nn.utils import prune  # type: ignore[import-not-found]
-from torch.quantization import (  # type: ignore[import-not-found]
+import mlflow
+import torch
+import torch.nn.functional as F  # noqa: N812
+from fastapi import FastAPI, HTTPException
+from mlflow.tracking import MlflowClient
+from prometheus_client import Gauge, Histogram
+from pydantic import BaseModel
+from ray import serve
+from ray.serve.config import HTTPOptions
+from torch.nn.utils import prune
+from torch.quantization import (
     get_default_qconfig,
     prepare_qat,
     quantize_dynamic,
 )
-from torch.utils.data import DataLoader  # type: ignore[import-not-found]
-from transformers import (  # type: ignore[import-not-found]
+from torch.utils.data import DataLoader, Dataset
+from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
 )
@@ -94,7 +94,7 @@ class ModelOptimizer:
             optimization_type: str
             config: dict[str, Any] = {}
 
-        @self.app.post("/optimize")  # type: ignore[misc]
+        @self.app.post("/optimize")
         async def optimize_model(request: OptimizationRequest) -> dict[str, Any]:
             try:
                 # Optimize model
@@ -241,9 +241,16 @@ class ModelOptimizer:
 
     def _get_training_batches(self) -> DataLoader[Any]:
         """Get training batches for distillation."""
+
         # Placeholder implementation; replace with real data loader
-        empty_dataset: list[Any] = []
-        return DataLoader(empty_dataset)
+        class EmptyDataset(Dataset[Any]):
+            def __len__(self) -> int:
+                return 0
+
+            def __getitem__(self, index: int) -> Any:
+                raise IndexError("Empty dataset")
+
+        return DataLoader(EmptyDataset())
 
     def _save_optimized_model(
         self, model: torch.nn.Module, original_path: str, optimization_type: str
