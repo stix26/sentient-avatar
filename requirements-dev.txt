@@ -612,7 +612,7 @@ stack-data==0.6.3
     # via ipython
 stevedore==5.4.1
     # via bandit
-structlog==24.1.0
+structlog==25.4.0
     # via -r requirements-dev.in
 tenacity==8.2.3
     # via
