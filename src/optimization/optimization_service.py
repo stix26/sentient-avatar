@@ -2,25 +2,28 @@ import logging
 import os
 import time
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, cast
 
-import mlflow
-import torch
-from fastapi import FastAPI, HTTPException
-from mlflow.tracking import MlflowClient
-from prometheus_client import Gauge, Histogram
-from pydantic import BaseModel
-from ray import serve
-from ray.serve.config import HTTPOptions
-from torch.nn import functional as F
-from torch.nn.utils import prune
-from torch.quantization import (
+import mlflow  # type: ignore[import-not-found]
+import torch  # type: ignore[import-not-found]
+import torch.nn.functional as F  # type: ignore[import-not-found]  # noqa: N812
+from fastapi import FastAPI, HTTPException  # type: ignore[import-not-found]
+from mlflow.tracking import MlflowClient  # type: ignore[import-not-found]
+from prometheus_client import Gauge, Histogram  # type: ignore[import-not-found]
+from pydantic import BaseModel  # type: ignore[import-not-found]
+from ray import serve  # type: ignore[import-not-found]
+from ray.serve.config import HTTPOptions  # type: ignore[import-not-found]
+from torch.nn.utils import prune  # type: ignore[import-not-found]
+from torch.quantization import (  # type: ignore[import-not-found]
     get_default_qconfig,
     prepare_qat,
     quantize_dynamic,
 )
-from torch.utils.data import DataLoader
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from torch.utils.data import DataLoader  # type: ignore[import-not-found]
+from transformers import (  # type: ignore[import-not-found]
+    AutoModelForCausalLM,
+    AutoTokenizer,
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -43,7 +46,7 @@ MODEL_LATENCY = Gauge(
 
 
 class ModelOptimizer:
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         self.config = config
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -58,7 +61,7 @@ class ModelOptimizer:
         mlflow.set_tracking_uri(self.config["mlflow_tracking_uri"])
         self.mlflow_client = MlflowClient()
 
-    def _initialize_components(self):
+    def _initialize_components(self) -> None:
         """Initialize optimization components."""
         # Load teacher model
         self.teacher_model = AutoModelForCausalLM.from_pretrained(
@@ -83,16 +86,16 @@ class ModelOptimizer:
         self.quantization_config = get_default_qconfig("fbgemm")
         self.pruning_config = {"amount": 0.3, "dim": 0, "n": 2}
 
-    def _setup_routes(self):
+    def _setup_routes(self) -> None:
         """Set up FastAPI routes."""
 
         class OptimizationRequest(BaseModel):
             model_path: str
             optimization_type: str
-            config: Dict[str, Any] = {}
+            config: dict[str, Any] = {}
 
-        @self.app.post("/optimize")
-        async def optimize_model(request: OptimizationRequest):
+        @self.app.post("/optimize")  # type: ignore[misc]
+        async def optimize_model(request: OptimizationRequest) -> dict[str, Any]:
             try:
                 # Optimize model
                 start_time = time.time()
@@ -139,11 +142,11 @@ class ModelOptimizer:
                     "timestamp": datetime.now().isoformat(),
                 }
             except Exception as e:
-                logger.error(f"Error optimizing model: {str(e)}")
-                raise HTTPException(status_code=500, detail=str(e))
+                logger.error(f"Error optimizing model: {e!s}")
+                raise HTTPException(status_code=500, detail=str(e)) from e
 
     def _quantize_model(
-        self, model_path: str, config: Dict[str, Any]
+        self, model_path: str, config: dict[str, Any]
     ) -> torch.nn.Module:
         """Quantize model using dynamic quantization."""
         # Load model
@@ -154,17 +157,20 @@ class ModelOptimizer:
         model = prepare_qat(model)
 
         # Quantize model
-        quantized_model = quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
+        quantized_model = cast(
+            torch.nn.Module,
+            quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8),
+        )
 
         return quantized_model
 
-    def _prune_model(self, model_path: str, config: Dict[str, Any]) -> torch.nn.Module:
+    def _prune_model(self, model_path: str, config: dict[str, Any]) -> torch.nn.Module:
         """Prune model using structured pruning."""
         # Load model
         model = AutoModelForCausalLM.from_pretrained(model_path)
 
         # Apply pruning
-        for name, module in model.named_modules():
+        for _name, module in model.named_modules():
             if isinstance(module, torch.nn.Linear):
                 prune.l1_unstructured(
                     module,
@@ -175,7 +181,7 @@ class ModelOptimizer:
         return model
 
     def _distill_model(
-        self, model_path: str, config: Dict[str, Any]
+        self, model_path: str, config: dict[str, Any]
     ) -> torch.nn.Module:
         """Distill knowledge from teacher to student model."""
         # Load student model
@@ -192,7 +198,7 @@ class ModelOptimizer:
         # Training loop
         optimizer = torch.optim.AdamW(student_model.parameters())
 
-        for epoch in range(config.get("epochs", 3)):
+        for _epoch in range(config.get("epochs", 3)):
             for batch in self._get_training_batches():
                 # Forward pass
                 student_outputs = student_model(**batch)
@@ -233,10 +239,11 @@ class ModelOptimizer:
 
         return distillation_loss
 
-    def _get_training_batches(self) -> DataLoader:
+    def _get_training_batches(self) -> DataLoader[Any]:
         """Get training batches for distillation."""
-        # Implement data loading
-        return []
+        # Placeholder implementation; replace with real data loader
+        empty_dataset: list[Any] = []
+        return DataLoader(empty_dataset)
 
     def _save_optimized_model(
         self, model: torch.nn.Module, original_path: str, optimization_type: str
@@ -265,7 +272,7 @@ class ModelOptimizer:
         self,
         model_path: str,
         optimization_type: str,
-        config: Dict[str, Any],
+        config: dict[str, Any],
         output_path: str,
         duration: float,
     ) -> None:
@@ -291,11 +298,11 @@ class ModelOptimizer:
                 mlflow.log_artifacts(output_path)
 
         except Exception as e:
-            logger.error(f"Error logging to MLflow: {str(e)}")
+            logger.error(f"Error logging to MLflow: {e!s}")
             raise
 
 
-def main():
+def main() -> None:
     # Load configuration
     config = {
         "teacher_model_path": "/app/models/teacher",
