@@ -665,7 +665,7 @@ types-pyyaml==6.0.12.12
     # via -r requirements-dev.in
 types-requests==2.31.0.20240125
     # via -r requirements-dev.in
-types-setuptools==69.0.0.20240106
+types-setuptools==80.9.0.20250529
     # via -r requirements-dev.in
 typing-extensions==4.14.0
     # via
