@@ -57,7 +57,7 @@ structlog==24.1.0
 
 # Security
 cryptography==42.0.2
-python-jose==3.3.0
+python-jose==3.5.0
 passlib==1.7.4
 bcrypt==4.1.2
 python-multipart==0.0.9
