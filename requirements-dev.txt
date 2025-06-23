@@ -485,6 +485,7 @@ pygments==2.19.1
     #   jupyter-console
     #   mkdocs-material
     #   nbconvert
+    #   pytest
     #   qtconsole
     #   rich
 pylint==3.0.3
@@ -495,7 +496,7 @@ pymdown-extensions==10.15
     #   mkdocstrings
 pyproject-hooks==1.2.0
     # via build
-pytest==8.0.0
+pytest==8.4.1
     # via
     #   -r requirements-dev.in
     #   pytest-asyncio
