@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements-dev.txt requirements-dev.in
 #
-alembic==1.13.1
+alembic==1.16.2
     # via -r requirements-dev.in
 annotated-types==0.7.0
     # via pydantic
