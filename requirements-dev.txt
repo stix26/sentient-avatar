@@ -520,7 +520,7 @@ python-dotenv==1.0.1
     # via
     #   -r requirements-dev.in
     #   pydantic-settings
-python-jose==3.3.0
+python-jose==3.5.0
     # via -r requirements-dev.in
 python-json-logger==3.3.0
     # via jupyter-events
