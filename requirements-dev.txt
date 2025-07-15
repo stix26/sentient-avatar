@@ -44,7 +44,7 @@ bcrypt==4.1.2
     # via -r requirements-dev.in
 beautifulsoup4==4.13.4
     # via nbconvert
-black==24.1.1
+black==24.3.0
     # via -r requirements-dev.in
 bleach[css]==6.2.0
     # via nbconvert
@@ -84,7 +84,7 @@ coverage[toml]==7.4.1
     # via
     #   -r requirements-dev.in
     #   pytest-cov
-cryptography==42.0.2
+cryptography==44.0.1
     # via
     #   -r requirements-dev.in
     #   authlib
@@ -524,7 +524,7 @@ python-jose==3.3.0
     # via -r requirements-dev.in
 python-json-logger==3.3.0
     # via jupyter-events
-python-multipart==0.0.9
+python-multipart==0.0.18
     # via -r requirements-dev.in
 pyyaml==6.0.2
     # via
