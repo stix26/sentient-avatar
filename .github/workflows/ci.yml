@@ -249,7 +249,7 @@ jobs:
         }
     
     - name: Upload security scan results
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: bandit-sarif.json
         fail_on_error: false
@@ -363,7 +363,7 @@ jobs:
         fail-on: 'CRITICAL'
     
     - name: Upload Trivy scan results
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: trivy-results.sarif
         fail_on_error: false
@@ -397,14 +397,14 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: python
     
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      uses: github/codeql-action/autobuild@v4
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
       with:
         category: "/language:python" 
